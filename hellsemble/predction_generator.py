@@ -5,7 +5,7 @@ import pandas as pd
 from sklearn.base import ClassifierMixin
 
 
-class PredictionPolicy(ABC):
+class PredictionGenerator(ABC):
 
     @abstractmethod
     def make_prediction(
@@ -14,7 +14,7 @@ class PredictionPolicy(ABC):
         pass
 
 
-class FixedThresholdPredictionPolicy(PredictionPolicy):
+class FixedThresholdPredictionGenerator(PredictionGenerator):
 
     def __init__(self, threshold: float):
         self.threshold = threshold
@@ -24,6 +24,6 @@ class FixedThresholdPredictionPolicy(PredictionPolicy):
     ) -> np.ndarray:
         assert hasattr(
             estimator, "predict_proba"
-        ), "In this policy estimator must be able to return probabilities!"
+        ), "In this generator estimator must be able to return probabilities!"
         proba = estimator.predict_proba(X)[:, 1]
         return (proba >= self.threshold).astype(int)

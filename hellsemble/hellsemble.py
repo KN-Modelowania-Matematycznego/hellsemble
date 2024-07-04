@@ -6,24 +6,21 @@ import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, ClassifierMixin
 
-from .estimator_policy import PredefinedEstimatorsPolicy
-from .predction_policy import FixedThresholdPredictionPolicy
+from .estimator_generator import EstimatorGenerator
+from .predction_generator import PredictionGenerator
 
 
 class Hellsemble(BaseEstimator):
 
     def __init__(
         self,
-        estimators: list[ClassifierMixin],
+        estimator_generator: EstimatorGenerator,
+        prediction_generator: PredictionGenerator,
         routing_model: ClassifierMixin,
-        prediction_threshold: float,
     ):
-        self.estimator_policy = PredefinedEstimatorsPolicy(estimators)
+        self.estimator_generator = estimator_generator
         self.routing_model = routing_model
-        self.prediction_threshold = prediction_threshold
-        self.prediction_policy = FixedThresholdPredictionPolicy(
-            prediction_threshold
-        )
+        self.prediction_generator = prediction_generator
 
     def fit(
         self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
@@ -41,7 +38,7 @@ class Hellsemble(BaseEstimator):
         observations_to_classifiers_mapping = self.routing_model.predict(X)
         for i, estimator in enumerate(self.estimators):
             prediction[observations_to_classifiers_mapping == i] = (
-                self.prediction_policy.make_prediction(
+                self.prediction_generator.make_prediction(
                     estimator, X.loc[observations_to_classifiers_mapping == i]
                 )
             )
@@ -66,19 +63,18 @@ class Hellsemble(BaseEstimator):
         output_estimators = []
         misclassified_observations_idx = np.arange(X.shape[0])
         X_fit, y_fit = X, y
-        while self.estimator_policy.has_next():
+        while self.estimator_generator.has_next():
             # Generate next iterator
-            estimator = self.estimator_policy.propose_next_estimator(
-                correct_predictions_history, X_fit, y_fit
+            estimator = self.estimator_generator.fit_next_estimator(
+                X_fit, y_fit
             )
-            estimator.fit(X_fit, y_fit)
             output_estimators.append(estimator)
 
             # Make and evaluate predictions
-            estimators_predictions = self.prediction_policy.make_prediction(
+            estimator_predictions = self.prediction_generator.make_prediction(
                 estimator, X_fit
             )
-            correct_predictions_mask = estimators_predictions == y_fit
+            correct_predictions_mask = estimator_predictions == y_fit
 
             # Create prediction history entry
             misclassified_observations_idx = misclassified_observations_idx[
@@ -101,16 +97,25 @@ class Hellsemble(BaseEstimator):
         X: np.ndarray | pd.DataFrame,
         correct_predictions_history: list[np.ndarray],
     ) -> ClassifierMixin:
-        correct_prediction_model_idx = -1 * np.ones(shape=(X.shape[0]))
+        y = self.__generate_fitting_data_for_routing_model(
+            correct_predictions_history
+        )
+        return routing_model.fit(X, y)
+
+    def __generate_fitting_data_for_routing_model(
+        self, correct_predictions_history: list[np.ndarray]
+    ) -> np.ndarray:
+        correct_prediction_model_idx = -1 * np.ones(
+            shape=(len(correct_predictions_history[0]))
+        )
         for i, prediction_history_entry in zip(
-            range(len(correct_predictions_history) - 1, -1, -1),
+            reversed(range(len(correct_predictions_history))),
             reversed(correct_predictions_history),
         ):
             correct_prediction_model_idx[prediction_history_entry] = i
-            print(np.unique(correct_prediction_model_idx))
         # Remaining observations go to the last canto.
         # Maybe they should go somewhere else?
         correct_prediction_model_idx[correct_prediction_model_idx == -1] = (
             len(correct_predictions_history) - 1
         )
-        return routing_model.fit(X, correct_prediction_model_idx)
+        return correct_prediction_model_idx
