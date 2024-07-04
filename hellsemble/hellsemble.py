@@ -25,7 +25,7 @@ class Hellsemble(BaseEstimator):
     def fit(
         self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
     ) -> Hellsemble:
-        self.estimators, self.__correct_predictions_history = (
+        self.__estimators, self.__correct_predictions_history = (
             self.__fit_estimators(X, y)
         )
         self.routing_model = self.__fit_routing_model(
@@ -36,7 +36,7 @@ class Hellsemble(BaseEstimator):
     def predict(self, X: np.ndarray | pd.DataFrame) -> np.ndarray:
         prediction = np.zeros(shape=(X.shape[0], 2))
         observations_to_classifiers_mapping = self.routing_model.predict(X)
-        for i, estimator in enumerate(self.estimators):
+        for i, estimator in enumerate(self.__estimators):
             prediction[observations_to_classifiers_mapping == i] = (
                 self.prediction_generator.make_prediction(
                     estimator, X.loc[observations_to_classifiers_mapping == i]
@@ -48,7 +48,7 @@ class Hellsemble(BaseEstimator):
     def predict_proba(self, X: np.ndarray | pd.DataFrame) -> np.ndarray:
         prediction = np.zeros(shape=(X.shape[0], 2))
         observations_to_classifiers_mapping = self.routing_model.predict(X)
-        for i, estimator in enumerate(self.estimators):
+        for i, estimator in enumerate(self.__estimators):
             prediction[observations_to_classifiers_mapping == i] = (
                 estimator.predict_proba(
                     X.loc[observations_to_classifiers_mapping == i]
@@ -63,7 +63,10 @@ class Hellsemble(BaseEstimator):
         output_estimators = []
         misclassified_observations_idx = np.arange(X.shape[0])
         X_fit, y_fit = X, y
-        while self.estimator_generator.has_next():
+        while (
+            self.estimator_generator.has_next()
+            and not self.__fitting_stop_condition(correct_predictions_history)
+        ):
             # Generate next iterator
             estimator = self.estimator_generator.fit_next_estimator(
                 X_fit, y_fit
@@ -71,8 +74,10 @@ class Hellsemble(BaseEstimator):
             output_estimators.append(estimator)
 
             # Make and evaluate predictions
-            estimator_predictions = self.prediction_generator.make_prediction(
-                estimator, X_fit
+            estimator_predictions = (
+                self.prediction_generator.make_prediction_train(
+                    estimator, X_fit
+                )
             )
             correct_predictions_mask = estimator_predictions == y_fit
 
@@ -90,6 +95,15 @@ class Hellsemble(BaseEstimator):
                 y_fit[~correct_predictions_mask],
             )
         return output_estimators, correct_predictions_history
+
+    def __fitting_stop_condition(
+        self, correct_predictions_history: list[np.ndarray]
+    ) -> bool:
+        # Place for additional stop conditions
+        return (
+            len(correct_predictions_history) > 0
+            and (~correct_predictions_history[-1]).mean() >= 0.99
+        )
 
     def __fit_routing_model(
         self,

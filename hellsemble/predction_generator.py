@@ -8,10 +8,15 @@ from sklearn.base import ClassifierMixin
 class PredictionGenerator(ABC):
 
     @abstractmethod
-    def make_prediction(
+    def make_prediction_train(
         self, estimator: ClassifierMixin, X: np.ndarray | pd.DataFrame
     ) -> np.ndarray:
         pass
+
+    def make_prediction(
+        self, estimator: ClassifierMixin, X: np.ndarray | pd.DataFrame
+    ) -> np.ndarray:
+        return self.make_prediction_train(estimator, X)
 
 
 class FixedThresholdPredictionGenerator(PredictionGenerator):
@@ -19,7 +24,7 @@ class FixedThresholdPredictionGenerator(PredictionGenerator):
     def __init__(self, threshold: float):
         self.threshold = threshold
 
-    def make_prediction(
+    def make_prediction_train(
         self, estimator: ClassifierMixin, X: np.ndarray | pd.DataFrame
     ) -> np.ndarray:
         assert hasattr(
