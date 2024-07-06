@@ -25,7 +25,9 @@ class Hellsemble(BaseEstimator):
     def fit(
         self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
     ) -> Hellsemble:
-        self.__estimators, self.__correct_predictions_history = (
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+        self.estimators, self.__correct_predictions_history = (
             self.__fit_estimators(X, y)
         )
         self.routing_model = self.__fit_routing_model(
@@ -34,26 +36,32 @@ class Hellsemble(BaseEstimator):
         return self
 
     def predict(self, X: np.ndarray | pd.DataFrame) -> np.ndarray:
-        prediction = np.zeros(shape=(X.shape[0], 2))
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+        prediction = np.zeros(shape=(X.shape[0]))
         observations_to_classifiers_mapping = self.routing_model.predict(X)
-        for i, estimator in enumerate(self.__estimators):
-            prediction[observations_to_classifiers_mapping == i] = (
-                self.prediction_generator.make_prediction(
-                    estimator, X.loc[observations_to_classifiers_mapping == i]
+        for i, estimator in enumerate(self.estimators):
+            if np.any(observations_to_classifiers_mapping == i):
+                prediction[observations_to_classifiers_mapping == i] = (
+                    self.prediction_generator.make_prediction(
+                        estimator, X[observations_to_classifiers_mapping == i]
+                    )
                 )
-            )
 
         return prediction
 
     def predict_proba(self, X: np.ndarray | pd.DataFrame) -> np.ndarray:
+        if isinstance(X, pd.DataFrame):
+            X = X.values
         prediction = np.zeros(shape=(X.shape[0], 2))
         observations_to_classifiers_mapping = self.routing_model.predict(X)
-        for i, estimator in enumerate(self.__estimators):
-            prediction[observations_to_classifiers_mapping == i] = (
-                estimator.predict_proba(
-                    X.loc[observations_to_classifiers_mapping == i]
+        for i, estimator in enumerate(self.estimators):
+            if np.any(observations_to_classifiers_mapping == i):
+                prediction[observations_to_classifiers_mapping == i] = (
+                    estimator.predict_proba(
+                        X[observations_to_classifiers_mapping == i]
+                    )
                 )
-            )
         return prediction
 
     def __fit_estimators(
@@ -102,7 +110,7 @@ class Hellsemble(BaseEstimator):
         # Place for additional stop conditions
         return (
             len(correct_predictions_history) > 0
-            and (~correct_predictions_history[-1]).mean() >= 0.99
+            and (correct_predictions_history[-1]).mean() >= 0.95
         )
 
     def __fit_routing_model(
