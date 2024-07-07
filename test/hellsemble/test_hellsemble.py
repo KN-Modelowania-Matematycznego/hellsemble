@@ -69,16 +69,38 @@ def estimator_generator() -> EstimatorGenerator:
 
 
 @pytest.fixture
-def correct_predictions_history() -> list[np.ndarray]:
+def fitting_history() -> list[np.ndarray]:
     return [
         np.array(
-            [True, False, True, False, True, False, False, False, True, True]
+            [False, True, False, True, False, True, True, True, False, False]
         ),
         np.array(
-            [True, True, True, True, True, True, False, False, True, True]
+            [
+                False,
+                False,
+                False,
+                False,
+                False,
+                False,
+                True,
+                True,
+                False,
+                False,
+            ]
         ),
         np.array(
-            [True, True, True, True, True, True, False, True, True, True]
+            [
+                False,
+                False,
+                False,
+                False,
+                False,
+                False,
+                True,
+                False,
+                False,
+                False,
+            ]
         ),
     ]
 
@@ -100,34 +122,32 @@ def test__fit_estimators(
     prediction_generator: PredictionGenerator,
     estimator_generator: EstimatorGenerator,
     routing_model: ClassifierMixin,
-    correct_predictions_history: list[np.ndarray],
+    fitting_history: list[np.ndarray],
 ) -> None:
     # Given
     hellsemble = Hellsemble(
         estimator_generator, prediction_generator, routing_model
     )
     X, y = train_data
-    expected_correct_predictions_history = correct_predictions_history
+    expected_fitting_history = fitting_history
 
     # When
-    estimators, actual_correct_predictions_history = (
+    estimators, actual_fitting_history = (
         hellsemble._Hellsemble__fit_estimators(X, y)
     )
 
     # Then
     # Check prediction history
-    assert len(expected_correct_predictions_history) == len(
-        actual_correct_predictions_history
-    )
+    assert len(expected_fitting_history) == len(actual_fitting_history)
     for (
-        expected_correct_predictions_history_entry,
+        expected_fitting_history_entry,
         actual_predictions_history_entry,
     ) in zip(
-        expected_correct_predictions_history,
-        actual_correct_predictions_history,
+        expected_fitting_history,
+        actual_fitting_history,
     ):
         assert np.array_equal(
-            expected_correct_predictions_history_entry,
+            expected_fitting_history_entry,
             actual_predictions_history_entry,
         )
     # Check correct data used during fitting estimators
@@ -135,15 +155,15 @@ def test__fit_estimators(
     assert_called_once_with_numpy_arrays(
         estimators[1].fit,
         [
-            X[~correct_predictions_history[0]],
-            y[~correct_predictions_history[0]],
+            X[fitting_history[0]],
+            y[fitting_history[0]],
         ],
     )
     assert_called_once_with_numpy_arrays(
         estimators[2].fit,
         [
-            X[~correct_predictions_history[1]],
-            y[~correct_predictions_history[1]],
+            X[fitting_history[1]],
+            y[fitting_history[1]],
         ],
     )
 
@@ -152,7 +172,7 @@ def test__generate_fitting_data_for_routing_model(
     prediction_generator: PredictionGenerator,
     estimator_generator: EstimatorGenerator,
     routing_model: ClassifierMixin,
-    correct_predictions_history: list[np.ndarray],
+    fitting_history: list[np.ndarray],
     routing_model_fit_data: np.ndarray,
 ) -> None:
     # Given
@@ -164,7 +184,7 @@ def test__generate_fitting_data_for_routing_model(
     # When
     actual_routing_model_fit_data = (
         hellsemble._Hellsemble__generate_fitting_data_for_routing_model(
-            correct_predictions_history
+            fitting_history
         )
     )
 
@@ -179,7 +199,7 @@ def test__fit_routing_model(
     prediction_generator: PredictionGenerator,
     estimator_generator: EstimatorGenerator,
     routing_model: ClassifierMixin,
-    correct_predictions_history: list[np.ndarray],
+    fitting_history: list[np.ndarray],
     routing_model_fit_data: np.ndarray,
 ) -> None:
     # Given
@@ -190,7 +210,7 @@ def test__fit_routing_model(
 
     # When
     actual_routing_model = hellsemble._Hellsemble__fit_routing_model(
-        routing_model, X, correct_predictions_history
+        routing_model, X, fitting_history
     )
 
     # Then
@@ -208,12 +228,10 @@ def test__fitting_stop_condition_when_holds(
     hellsemble = Hellsemble(
         estimator_generator, prediction_generator, routing_model
     )
-    correct_predictions_history = [np.full((100), True)]
+    fitting_history = [np.full((100), False)]
 
     # When / Then
-    assert hellsemble._Hellsemble__fitting_stop_condition(
-        correct_predictions_history
-    )
+    assert hellsemble._Hellsemble__fitting_stop_condition(fitting_history)
 
 
 def test__fitting_stop_condition_when_does_not_hold(
@@ -225,13 +243,11 @@ def test__fitting_stop_condition_when_does_not_hold(
     hellsemble = Hellsemble(
         estimator_generator, prediction_generator, routing_model
     )
-    correct_predictions_history = [np.full((100), True)]
-    correct_predictions_history[0][:10] = False
+    fitting_history = [np.full((100), False)]
+    fitting_history[0][:10] = True
 
     # When / Then
-    assert not hellsemble._Hellsemble__fitting_stop_condition(
-        correct_predictions_history
-    )
+    assert not hellsemble._Hellsemble__fitting_stop_condition(fitting_history)
 
 
 def test_predict_proba(
