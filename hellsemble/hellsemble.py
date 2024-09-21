@@ -5,6 +5,7 @@ from typing import Tuple
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.metrics import f1_score
 
 from .estimator_generator import EstimatorGenerator
 from .predction_generator import PredictionGenerator
@@ -25,6 +26,10 @@ class Hellsemble(BaseEstimator):
             route data points to specific estimators during prediction.
         prediction_generator (PredictionGenerator): An object that generates
             predictions from the estimators.
+        mode (str): String indicating mode of hellsemble creation. Default
+            value 'greedy'. Any other value assumes that models will
+            be selected sequentially according to models order provided
+            by user.
     """
 
     def __init__(
@@ -32,20 +37,26 @@ class Hellsemble(BaseEstimator):
         estimator_generator: EstimatorGenerator,
         prediction_generator: PredictionGenerator,
         routing_model: ClassifierMixin,
+        mode: str = "greedy",
     ):
         self.estimator_generator = estimator_generator
         self.routing_model = routing_model
         self.prediction_generator = prediction_generator
+        self.mode = mode
 
     def fit(
         self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
     ) -> Hellsemble:
         """
-        Fits the Hellsemble model to the provided data.
-        This method iterates through the estimator generator,
-        training each estimator on the data for which the previous estimators
-        failed to make correct predictions. It also trains the routing model
-        to predict which estimator best suits each data point.
+        Fits the Hellsemble model to the provided data according
+        to training mode. When mode is not greedy,
+        this method iterates through the estimator generator,
+        training each estimator on the data for which the previous
+        estimators failed to make correct predictions.
+        When mode is greedy, additionally in each iteration the model
+        that maximizes F1 score on validation set in current setup
+        is selected to ensemble. Method also trains the routing
+        model to predict which estimator best suits each data point.
 
         Args:
             X (pd.DataFrame | np.ndarray): Feature matrix.
@@ -56,10 +67,16 @@ class Hellsemble(BaseEstimator):
         """
         if isinstance(X, pd.DataFrame):
             X = X.values
-        self.estimators, self.__fitting_history = self.__fit_estimators(X, y)
-        self.routing_model = self.__fit_routing_model(
-            self.routing_model, X, self.__fitting_history
-        )
+        if self.mode == "greedy":
+            self.__fitting_history = self.__fit_estimators_greedy(X, y)
+        else:
+            self.estimators, self.__fitting_history = self.__fit_estimators(
+                X, y
+            )
+        if len(self.estimators) > 1:
+            self.routing_model = self.__fit_routing_model(
+                self.routing_model, X, self.__fitting_history
+            )
         return self
 
     def predict(self, X: np.ndarray | pd.DataFrame) -> np.ndarray:
@@ -78,6 +95,8 @@ class Hellsemble(BaseEstimator):
         """
         if isinstance(X, pd.DataFrame):
             X = X.values
+        if len(self.estimators) == 1:
+            return self.estimators[0].predict(X)
         prediction = np.zeros(shape=(X.shape[0]))
         observations_to_classifiers_mapping = self.routing_model.predict(X)
         for i, estimator in enumerate(self.estimators):
@@ -105,6 +124,8 @@ class Hellsemble(BaseEstimator):
         """
         if isinstance(X, pd.DataFrame):
             X = X.values
+        if len(self.estimators) == 1:
+            return self.estimators[0].predict_proba(X)
         prediction = np.zeros(shape=(X.shape[0], 2))
         observations_to_classifiers_mapping = self.routing_model.predict(X)
         for i, estimator in enumerate(self.estimators):
@@ -170,6 +191,92 @@ class Hellsemble(BaseEstimator):
                 y_fit[failed_observations_mask],
             )
         return output_estimators, fitting_history
+
+    def __fit_estimators_greedy(
+        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
+    ) -> None:
+        """
+        Fits a sequence of estimators and tracks their performance.
+        It uses the logic of fitting subsequent classifiers on observations
+        that previous models failed to predict correctly. But in each iteration
+        it dynamically verifies which model improves F! score
+        on the validation dataset the most and adds it to estimator list.
+
+        Args:
+            X (pd.DataFrame | np.ndarray): Feature matrix.
+            y (np.ndarray | pd.Series): Target vector
+
+        """
+        fitting_history: list[np.ndarray] = []
+        self.estimators = []
+        failed_observations_idx = np.arange(X.shape[0])
+        X_fit, y_fit = X, y
+
+        best_f1_score = 0
+
+        while not self.__fitting_stop_condition(fitting_history):
+            best_model = None
+            best_model_f1 = best_f1_score
+            self.estimator_generator.reset_generator()
+
+            # Going through provided model list
+            while self.estimator_generator.has_next():
+                estimator = self.estimator_generator.fit_next_estimator(
+                    X_fit, y_fit
+                )
+                predictions = self.prediction_generator.make_prediction_train(
+                    estimator, X_fit
+                )
+                failed_observations_mask = predictions != y_fit
+                failed_observations_idx_temp = failed_observations_idx[
+                    failed_observations_mask
+                ]
+
+                fitting_history_entry = np.full((X.shape[0]), False)
+                fitting_history_entry[failed_observations_idx_temp] = True
+                self.estimators.append(estimator)
+                if len(self.estimators) > 1:
+                    self.routing_model = self.__fit_routing_model(
+                        self.routing_model,
+                        X,
+                        fitting_history + [fitting_history_entry],
+                    )
+                predictions = self.predict(X)
+                self.estimators.pop()
+
+                current_f1 = f1_score(y, predictions)
+                if current_f1 >= best_model_f1:
+                    best_model = estimator
+                    best_model_f1 = current_f1
+
+            # Best model from iteration is added to estiamtors sequence
+            if best_model is not None and best_model_f1 >= best_f1_score:
+                self.estimators.append(best_model)
+                best_f1_score = best_model_f1
+
+                predictions = self.prediction_generator.make_prediction_train(
+                    best_model, X_fit
+                )
+
+                failed_observations_mask = predictions != y_fit
+                failed_observations_idx = failed_observations_idx[
+                    failed_observations_mask
+                ]
+
+                fitting_history_entry = np.full((X.shape[0]), False)
+                fitting_history_entry[failed_observations_idx] = True
+                fitting_history.append(fitting_history_entry)
+
+                X_fit, y_fit = (
+                    X_fit[failed_observations_mask],
+                    y_fit[failed_observations_mask],
+                )
+
+                if len(failed_observations_idx) == 0:
+                    break
+            else:
+                break
+        return fitting_history
 
     def __fitting_stop_condition(
         self, fitting_history: list[np.ndarray]

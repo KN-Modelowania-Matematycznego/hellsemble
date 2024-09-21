@@ -42,6 +42,13 @@ class EstimatorGenerator(ABC):
         """
         pass
 
+    @abstractmethod
+    def reset_generator(self) -> None:
+        """
+        Methods that resets the generator.
+        """
+        pass
+
 
 class PredefinedEstimatorsGenerator(EstimatorGenerator):
     """
@@ -93,3 +100,9 @@ class PredefinedEstimatorsGenerator(EstimatorGenerator):
             bool: True if next estimator can be provided. False otherwise
         """
         return self.__proposals_counter != len(self.__estimators)
+
+    def reset_generator(self) -> None:
+        """
+        Methods that resets value of proposal counter field to 0.
+        """
+        self.__proposals_counter = 0
