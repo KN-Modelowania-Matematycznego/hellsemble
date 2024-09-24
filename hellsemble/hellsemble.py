@@ -8,7 +8,7 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.metrics import f1_score
 
 from .estimator_generator import EstimatorGenerator
-from .predction_generator import PredictionGenerator
+from .prediction_generator import PredictionGenerator
 
 
 class Hellsemble(BaseEstimator):
@@ -70,8 +70,8 @@ class Hellsemble(BaseEstimator):
         if self.mode == "greedy":
             self.__fitting_history = self.__fit_estimators_greedy(X, y)
         else:
-            self.estimators, self.__fitting_history = self.__fit_estimators(
-                X, y
+            self.estimators, self.__fitting_history = (
+                self.__fit_estimators_sequential(X, y)
             )
         if len(self.estimators) > 1:
             self.routing_model = self.__fit_routing_model(
@@ -137,7 +137,7 @@ class Hellsemble(BaseEstimator):
                 )
         return prediction
 
-    def __fit_estimators(
+    def __fit_estimators_sequential(
         self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
     ) -> Tuple[list[ClassifierMixin], list[np.ndarray]]:
         """
@@ -215,12 +215,15 @@ class Hellsemble(BaseEstimator):
         best_f1_score = 0
 
         while not self.__fitting_stop_condition(fitting_history):
+            # print(self.__fitting_stop_condition(fitting_history))
+            print("Co kurwa")
             best_model = None
             best_model_f1 = best_f1_score
             self.estimator_generator.reset_generator()
 
             # Going through provided model list
             while self.estimator_generator.has_next():
+                print("Co tam")
                 estimator = self.estimator_generator.fit_next_estimator(
                     X_fit, y_fit
                 )
@@ -245,19 +248,24 @@ class Hellsemble(BaseEstimator):
                 self.estimators.pop()
 
                 current_f1 = f1_score(y, predictions)
+                print(current_f1)
                 if current_f1 >= best_model_f1:
                     best_model = estimator
                     best_model_f1 = current_f1
+                # print(self.estimator_generator.has_next())
+                # print(self.estimator_generator.has_next())
 
             # Best model from iteration is added to estiamtors sequence
             if best_model is not None and best_model_f1 >= best_f1_score:
                 self.estimators.append(best_model)
                 best_f1_score = best_model_f1
-
+                print(f"Best: {best_f1_score}")
                 predictions = self.prediction_generator.make_prediction_train(
                     best_model, X_fit
                 )
-
+                print("Porównanie ostatnich elementów")
+                print(predictions[99])
+                print(y_fit[99])
                 failed_observations_mask = predictions != y_fit
                 failed_observations_idx = failed_observations_idx[
                     failed_observations_mask
@@ -266,16 +274,21 @@ class Hellsemble(BaseEstimator):
                 fitting_history_entry = np.full((X.shape[0]), False)
                 fitting_history_entry[failed_observations_idx] = True
                 fitting_history.append(fitting_history_entry)
-
+                print(f"Po maskowani: {failed_observations_idx}")
                 X_fit, y_fit = (
                     X_fit[failed_observations_mask],
                     y_fit[failed_observations_mask],
                 )
 
                 if len(failed_observations_idx) == 0:
+                    print("Oho, co my tu mamy")
                     break
             else:
                 break
+            print(
+                f"Condition: {self.__fitting_stop_condition(fitting_history)}"
+            )
+        print(fitting_history)
         return fitting_history
 
     def __fitting_stop_condition(

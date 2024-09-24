@@ -11,7 +11,7 @@ from hellsemble.estimator_generator import (
     EstimatorGenerator,
     PredefinedEstimatorsGenerator,
 )
-from hellsemble.predction_generator import (
+from hellsemble.prediction_generator import (
     FixedThresholdPredictionGenerator,
     PredictionGenerator,
 )
@@ -133,7 +133,7 @@ def test__fit_estimators(
 
     # When
     estimators, actual_fitting_history = (
-        hellsemble._Hellsemble__fit_estimators(X, y)
+        hellsemble._Hellsemble__fit_estimators_sequential(X, y)
     )
 
     # Then
