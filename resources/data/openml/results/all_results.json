@@ -1,0 +1,177 @@
+{
+    "spambase": {
+        "Logistic Regression": 0.9304952215464813,
+        "Random Forest": 0.9548218940052129,
+        "Support Vector Machine": 0.9357080799304952
+    },
+    "credit-approval": {
+        "Logistic Regression": 0.838150289017341,
+        "Random Forest": 0.8786127167630058,
+        "Support Vector Machine": 0.8208092485549133
+    },
+    "dresses-sales": {
+        "Logistic Regression": 0.672,
+        "Random Forest": 0.624,
+        "Support Vector Machine": 0.72
+    },
+    "numerai28.6": {
+        "Logistic Regression": 0.5213039867109635,
+        "Random Forest": 0.512624584717608,
+        "Support Vector Machine": 0.5242940199335548
+    },
+    "pc3": {
+        "Logistic Regression": 0.887468030690537,
+        "Random Forest": 0.8951406649616368,
+        "Support Vector Machine": 0.8976982097186701
+    },
+    "PhishingWebsites": {
+        "Logistic Regression": 0.9341534008683068,
+        "Random Forest": 0.9706946454413893,
+        "Support Vector Machine": 0.9536903039073806
+    },
+    "pc1": {
+        "Logistic Regression": 0.9244604316546763,
+        "Random Forest": 0.935251798561151,
+        "Support Vector Machine": 0.9316546762589928
+    },
+    "bank-marketing": {
+        "Logistic Regression": 0.9006458462355127,
+        "Random Forest": 0.9058656993718481,
+        "Support Vector Machine": 0.9035654251083783
+    },
+    "kc1": {
+        "Logistic Regression": 0.865530303030303,
+        "Random Forest": 0.8541666666666666,
+        "Support Vector Machine": 0.8560606060606061
+    },
+    "kc2": {
+        "Logistic Regression": 0.816793893129771,
+        "Random Forest": 0.8015267175572519,
+        "Support Vector Machine": 0.8320610687022901
+    },
+    "banknote-authentication": {
+        "Logistic Regression": 0.9795918367346939,
+        "Random Forest": 0.9708454810495627,
+        "Support Vector Machine": 1
+    },
+    "ilpd": {
+        "Logistic Regression": 0.7328767123287672,
+        "Random Forest": 0.726027397260274,
+        "Support Vector Machine": 0.7123287671232876
+    },
+    "adult": {
+        "Logistic Regression": 0.8488248300712472,
+        "Random Forest": 0.8518548849398083,
+        "Support Vector Machine": 0.8554581934321513
+    },
+    "Internet-Advertisements": {
+        "Logistic Regression": 0.9695121951219512,
+        "Random Forest": 0.973170731707317,
+        "Support Vector Machine": 0.9695121951219512
+    },
+    "pc4": {
+        "Logistic Regression": 0.9178082191780822,
+        "Random Forest": 0.9013698630136986,
+        "Support Vector Machine": 0.9013698630136986
+    },
+    "credit-g": {
+        "Logistic Regression": 0.776,
+        "Random Forest": 0.772,
+        "Support Vector Machine": 0.788
+    },
+    "Bioresponse": {
+        "Logistic Regression": 0.7270788912579957,
+        "Random Forest": 0.7931769722814499,
+        "Support Vector Machine": 0.7782515991471215
+    },
+    "blood-transfusion-service-center": {
+        "Logistic Regression": 0.7647058823529411,
+        "Random Forest": 0.7593582887700535,
+        "Support Vector Machine": 0.7807486631016043
+    },
+    "wilt": {
+        "Logistic Regression": 0.952892561983471,
+        "Random Forest": 0.9801652892561984,
+        "Support Vector Machine": 0.9785123966942149
+    },
+    "madelon": {
+        "Logistic Regression": 0.56,
+        "Random Forest": 0.683076923076923,
+        "Support Vector Machine": 0.5815384615384616
+    },
+    "ozone-level-8hr": {
+        "Logistic Regression": 0.9400630914826499,
+        "Random Forest": 0.9511041009463722,
+        "Support Vector Machine": 0.9384858044164038
+    },
+    "jm1": {
+        "Logistic Regression": 0.8089639970609845,
+        "Random Forest": 0.8170462894930198,
+        "Support Vector Machine": 0.8111682586333578
+    },
+    "phoneme": {
+        "Logistic Regression": 0.7498149518874907,
+        "Random Forest": 0.9119170984455959,
+        "Support Vector Machine": 0.8393782383419689
+    },
+    "diabetes": {
+        "Logistic Regression": 0.7708333333333334,
+        "Random Forest": 0.7760416666666666,
+        "Support Vector Machine": 0.796875
+    },
+    "tic-tac-toe": {
+        "Logistic Regression": 0.975,
+        "Random Forest": 0.9833333333333333,
+        "Support Vector Machine": 0.9791666666666666
+    },
+    "kr-vs-kp": {
+        "Logistic Regression": 0.9624530663329162,
+        "Random Forest": 0.9899874843554443,
+        "Support Vector Machine": 0.9787234042553191
+    },
+    "sick": {
+        "Logistic Regression": 0.9660657476139979,
+        "Random Forest": 0.9809119830328739,
+        "Support Vector Machine": 0.9713679745493107
+    },
+    "nomao": {
+        "Logistic Regression": 0.9469653011488918,
+        "Random Forest": 0.9653011488917257,
+        "Support Vector Machine": 0.956713473366601
+    },
+    "climate-model-simulation-crashes": {
+        "Logistic Regression": 0.9629629629629629,
+        "Random Forest": 0.9185185185185185,
+        "Support Vector Machine": 0.9185185185185185
+    },
+    "wdbc": {
+        "Logistic Regression": 0.9790209790209791,
+        "Random Forest": 0.972027972027972,
+        "Support Vector Machine": 0.993006993006993
+    },
+    "electricity": {
+        "Logistic Regression": 0.7597104519774012,
+        "Random Forest": 0.906691384180791,
+        "Support Vector Machine": 0.7983757062146892
+    },
+    "breast-w": {
+        "Logistic Regression": 0.9657142857142857,
+        "Random Forest": 0.9542857142857143,
+        "Support Vector Machine": 0.9542857142857143
+    },
+    "qsar-biodeg": {
+        "Logistic Regression": 0.8863636363636364,
+        "Random Forest": 0.8712121212121212,
+        "Support Vector Machine": 0.8825757575757576
+    },
+    "churn": {
+        "Logistic Regression": 0.8576,
+        "Random Forest": 0.944,
+        "Support Vector Machine": 0.9056
+    },
+    "cylinder-bands": {
+        "Logistic Regression": 0.6814814814814815,
+        "Random Forest": 0.7925925925925926,
+        "Support Vector Machine": 0.725925925925926
+    }
+}

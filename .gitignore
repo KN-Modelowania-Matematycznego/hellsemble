@@ -3,3 +3,4 @@
 .venv
 notebooks/.*
 **/*.csv
+model_comparison.html
