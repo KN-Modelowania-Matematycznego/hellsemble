@@ -4,7 +4,7 @@ from unittest.mock import Mock
 import numpy as np
 import pytest
 from sklearn.base import ClassifierMixin
-from sklearn.metrics import f1_score
+from sklearn.metrics import accuracy_score
 
 from hellsemble import Hellsemble
 from hellsemble.estimator_generator import (
@@ -84,6 +84,7 @@ def test__fit_estimators_greedy(
     X, y = train_data
     hellsemble._Hellsemble__fit_estimators_greedy(X, y)
     predictions = hellsemble.predict(X)
+    assert hellsemble.metric == "accuracy"
     assert len(hellsemble.estimators) == 1
     assert (predictions == y).sum() == 99
-    assert round(f1_score(y, predictions), 2) == 0.99
+    assert round(accuracy_score(y, predictions), 2) == 0.99
