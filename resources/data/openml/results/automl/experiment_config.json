@@ -1,0 +1,14 @@
+{
+    "run_date": "2024-10-07 02:45:41",
+    "automl": "AutoSklearnConfig",
+    "models": [
+        "RandomForestClassifier()",
+        "RandomForestClassifier()",
+        "ExtraTreesClassifier()",
+        "AdaBoostClassifier()"
+    ],
+    "routing_model": "KNeighborsClassifier()",
+    "estimators_generator": "<class 'hellsemble.estimator_generator.PredefinedEstimatorsGenerator'>",
+    "metric": "accuracy_score",
+    "experiment_type": "full"
+}

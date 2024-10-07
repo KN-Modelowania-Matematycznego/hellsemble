@@ -8,6 +8,7 @@ from hellsemble.hellsemble import Hellsemble
 from hellsemble.estimator_generator import EstimatorGenerator
 from hellsemble.predction_generator import FixedThresholdPredictionGenerator
 from loguru import logger
+from testing.automl_config import AutoMLConfig
 
 
 class HellsembleExperiment:
@@ -47,7 +48,7 @@ class HellsembleExperiment:
         routing_model: ClassifierMixin,
         metric: Callable,
         estimators_generator: EstimatorGenerator,
-        automl: bool = False,
+        automl: AutoMLConfig = None,
         experiment_type: str = "full",
     ):
         self.train_dir = train_dir
@@ -112,7 +113,7 @@ class HellsembleExperiment:
     def _create_experiment_config(self):
         return {
             "run_date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "automl": self.automl,
+            "automl": self.automl.__class__.__name__,
             "models": [str(model) for model in self.models],
             "routing_model": str(self.routing_model),
             "estimators_generator": str(self.estimators_generator),
@@ -123,7 +124,10 @@ class HellsembleExperiment:
     def run(self):
 
         logger.info("Running experiment for:")
-        logger.info(f"  Models: {self.models}")
+        if not self.automl:
+            logger.info(f"  Models: {self.models}")
+        else:
+            logger.info("  Using AutoML to generate models for each data set.")
 
         results = {}
 
@@ -140,7 +144,14 @@ class HellsembleExperiment:
 
         for train_file, test_file in zip(train_files, test_files):
             dataset_name = os.path.basename(train_file).replace(".csv", "")
+            if self.automl:
+                train_data = pd.read_csv(train_file)
+                self.models = self.automl.get_models_from_automl(train_data)
+                logger.info(
+                    f"Selected models for dataset {dataset_name}: {self.models}"
+                )
             results[dataset_name] = {}
+
             logger.info(f"Running experiment for dataset: {dataset_name}")
             if self.experiment_type in ["full", "base_models"]:
                 try:

@@ -1,7 +1,11 @@
 from experiment import HellsembleExperiment
 from hellsemble.estimator_generator import PredefinedEstimatorsGenerator
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.ensemble import (
+    RandomForestClassifier,
+    GradientBoostingClassifier,
+    ExtraTreesClassifier,
+)
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.discriminant_analysis import (
@@ -9,7 +13,10 @@ from sklearn.discriminant_analysis import (
     QuadraticDiscriminantAnalysis,
 )
 from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, f1_score
+
+# from testing.autosklearn_config import AutoSklearnConfig
+from testing.autogluon_config import AutoGluonConfig
 
 
 ###
@@ -17,16 +24,15 @@ from sklearn.metrics import accuracy_score
 ###
 
 # Define the directories containing the training and test data.
-train_dir = "resources/data/openml/train"
-test_dir = "resources/data/openml/test"
+train_dir = "resources/data/openml/train/automl"
+test_dir = "resources/data/openml/test/automl"
 
 # Define the directory to save the results to.
-output_dir = "resources/data/openml/results"
+output_dir = "resources/data/openml/results/automl"
 
 # Define the base models to train and test.
 models = [
-    LogisticRegression(),
-    DecisionTreeClassifier(),
+    ExtraTreesClassifier(),
     RandomForestClassifier(),
 ]
 
@@ -36,6 +42,7 @@ estimators_generator = PredefinedEstimatorsGenerator
 
 # Define the metric used to evaluate the models.
 metric = accuracy_score
+automl = AutoGluonConfig()
 
 experiment = HellsembleExperiment(
     train_dir=train_dir,
@@ -45,6 +52,7 @@ experiment = HellsembleExperiment(
     routing_model=routing_model,
     metric=metric,
     estimators_generator=estimators_generator,
+    automl=automl,
     experiment_type="full",
 )
 

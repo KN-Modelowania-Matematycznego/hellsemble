@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 import pandas as pd
+from typing import Union
 from sklearn.base import ClassifierMixin
 
 
@@ -15,8 +16,8 @@ class EstimatorGenerator(ABC):
     @abstractmethod
     def fit_next_estimator(
         self,
-        X: pd.DataFrame | np.ndarray,
-        y: np.ndarray | pd.Series,
+        X: Union[pd.DataFrame, np.ndarray],
+        y: Union[np.ndarray, pd.Series],
     ) -> ClassifierMixin:
         """
         Abstract method that fits the next estimator based
@@ -67,8 +68,8 @@ class PredefinedEstimatorsGenerator(EstimatorGenerator):
 
     def fit_next_estimator(
         self,
-        X: pd.DataFrame | np.ndarray,
-        y: np.ndarray | pd.Series,
+        X: Union[pd.DataFrame, np.ndarray],
+        y: Union[np.ndarray, pd.Series],
     ) -> ClassifierMixin:
         """
         Fits the next estimator in the list to the provided data.
