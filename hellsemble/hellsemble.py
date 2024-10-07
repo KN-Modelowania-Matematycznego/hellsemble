@@ -42,7 +42,8 @@ class Hellsemble(BaseEstimator):
             Metric to evaluate the ensemble's fitting performance.
             Can be one of the predefined string metrics: 'accuracy',
             'balanced_accuracy', 'roc_auc', 'f1', or a custom
-            scoring function that accepts `y_true` and `y_pred` as arguments.
+            scoring function that accepts `y_true` and `y_pred_proba`
+            as arguments.
     """
 
     @validate_call(config=dict(arbitrary_types_allowed=True))
@@ -360,16 +361,20 @@ class Hellsemble(BaseEstimator):
         Returns:
             np.float64: metric score
         """
+        metrics_map = {
+            "roc_auc": roc_auc_score,
+            "accuracy": accuracy_score,
+            "balanced_accuracy": balanced_accuracy_score,
+            "f1": f1_score,
+        }
+
+        if callable(self.metric):
+            y_pred_proba = self.predict_proba(X)[:, 1]
+            return self.metric(y, y_pred_proba)
+
         if self.metric == "roc_auc":
             y_pred_proba = self.predict_proba(X)[:, 1]
-            return roc_auc_score(y, y_pred_proba)
+            return metrics_map["roc_auc"](y, y_pred_proba)
 
         y_pred = self.predict(X)
-        if self.metric == "accuracy":
-            return accuracy_score(y, y_pred)
-        elif self.metric == "balanced_accuracy":
-            return balanced_accuracy_score(y, y_pred)
-        elif self.metric == "f1":
-            return f1_score(y, y_pred)
-        elif callable(self.metric):
-            return self.metric(y, y_pred)
+        return metrics_map[self.metric](y, y_pred)
