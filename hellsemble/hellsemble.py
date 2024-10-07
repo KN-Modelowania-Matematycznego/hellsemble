@@ -1,13 +1,20 @@
 from __future__ import annotations
 
-from typing import Tuple
+from typing import Callable, Literal, Tuple
 
 import numpy as np
 import pandas as pd
+from pydantic import validate_call
 from sklearn.base import BaseEstimator, ClassifierMixin
+from sklearn.metrics import (
+    accuracy_score,
+    balanced_accuracy_score,
+    f1_score,
+    roc_auc_score,
+)
 
 from .estimator_generator import EstimatorGenerator
-from .predction_generator import PredictionGenerator
+from .prediction_generator import PredictionGenerator
 
 
 class Hellsemble(BaseEstimator):
@@ -25,27 +32,51 @@ class Hellsemble(BaseEstimator):
             route data points to specific estimators during prediction.
         prediction_generator (PredictionGenerator): An object that generates
             predictions from the estimators.
+         mode (str): Mode of ensemble creation. Two possible options:
+            'greedy' (default) and 'sequential'. 'greedy' mode dynamically
+            selects the best estimator based on performance during fitting,
+            while 'sequential' mode fits all estimators
+            in a predefined sequence.
+        metric (callable | Literal["accuracy", "balanced_accuracy",
+                                            "roc_auc", "f1"]):
+            Metric to evaluate the ensemble's fitting performance.
+            Can be one of the predefined string metrics: 'accuracy',
+            'balanced_accuracy', 'roc_auc', 'f1', or a custom
+            scoring function that accepts `y_true` and `y_pred_proba`
+            as arguments.
     """
 
+    @validate_call(config=dict(arbitrary_types_allowed=True))
     def __init__(
         self,
         estimator_generator: EstimatorGenerator,
         prediction_generator: PredictionGenerator,
         routing_model: ClassifierMixin,
+        mode: Literal["greedy", "sequential"] = "greedy",
+        metric: (
+            Callable
+            | Literal["accuracy", "balanced_accuracy", "roc_auc", "f1"]
+        ) = "accuracy",
     ):
         self.estimator_generator = estimator_generator
         self.routing_model = routing_model
         self.prediction_generator = prediction_generator
+        self.mode = mode
+        self.metric = metric
 
     def fit(
         self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
     ) -> Hellsemble:
         """
-        Fits the Hellsemble model to the provided data.
-        This method iterates through the estimator generator,
-        training each estimator on the data for which the previous estimators
-        failed to make correct predictions. It also trains the routing model
-        to predict which estimator best suits each data point.
+        Fits the Hellsemble model to the provided data according
+        to training mode. When mode is not greedy,
+        this method iterates through the estimator generator,
+        training each estimator on the data for which the previous
+        estimators failed to make correct predictions.
+        When mode is greedy, additionally in each iteration the model
+        that maximizes F1 score on validation set in current setup
+        is selected to ensemble. Method also trains the routing
+        model to predict which estimator best suits each data point.
 
         Args:
             X (pd.DataFrame | np.ndarray): Feature matrix.
@@ -56,10 +87,16 @@ class Hellsemble(BaseEstimator):
         """
         if isinstance(X, pd.DataFrame):
             X = X.values
-        self.estimators, self.__fitting_history = self.__fit_estimators(X, y)
-        self.routing_model = self.__fit_routing_model(
-            self.routing_model, X, self.__fitting_history
-        )
+        if self.mode == "greedy":
+            self.__fitting_history = self.__fit_estimators_greedy(X, y)
+        else:
+            self.estimators, self.__fitting_history = (
+                self.__fit_estimators_sequential(X, y)
+            )
+        if len(self.estimators) > 1:
+            self.routing_model = self.__fit_routing_model(
+                self.routing_model, X, self.__fitting_history
+            )
         return self
 
     def predict(self, X: np.ndarray | pd.DataFrame) -> np.ndarray:
@@ -78,6 +115,8 @@ class Hellsemble(BaseEstimator):
         """
         if isinstance(X, pd.DataFrame):
             X = X.values
+        if len(self.estimators) == 1:
+            return self.estimators[0].predict(X)
         prediction = np.zeros(shape=(X.shape[0]))
         observations_to_classifiers_mapping = self.routing_model.predict(X)
         for i, estimator in enumerate(self.estimators):
@@ -105,6 +144,8 @@ class Hellsemble(BaseEstimator):
         """
         if isinstance(X, pd.DataFrame):
             X = X.values
+        if len(self.estimators) == 1:
+            return self.estimators[0].predict_proba(X)
         prediction = np.zeros(shape=(X.shape[0], 2))
         observations_to_classifiers_mapping = self.routing_model.predict(X)
         for i, estimator in enumerate(self.estimators):
@@ -116,7 +157,7 @@ class Hellsemble(BaseEstimator):
                 )
         return prediction
 
-    def __fit_estimators(
+    def __fit_estimators_sequential(
         self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
     ) -> Tuple[list[ClassifierMixin], list[np.ndarray]]:
         """
@@ -171,6 +212,92 @@ class Hellsemble(BaseEstimator):
             )
         return output_estimators, fitting_history
 
+    def __fit_estimators_greedy(
+        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
+    ) -> None:
+        """
+        Fits a sequence of estimators and tracks their performance.
+        It uses the logic of fitting subsequent classifiers on observations
+        that previous models failed to predict correctly. But in each iteration
+        it dynamically verifies which model improves F! score
+        on the validation dataset the most and adds it to estimator list.
+
+        Args:
+            X (pd.DataFrame | np.ndarray): Feature matrix.
+            y (np.ndarray | pd.Series): Target vector
+
+        Returns:
+            list[np.ndarray]: list of masks indicating
+                which observations were used during fit of the estimators
+        """
+        fitting_history: list[np.ndarray] = []
+        self.estimators = []
+        failed_observations_idx = np.arange(X.shape[0])
+        X_fit, y_fit = X, y
+
+        best_score = 0
+
+        while not self.__fitting_stop_condition(fitting_history):
+            best_model = None
+            best_ensemble_score = best_score
+            self.estimator_generator.reset_generator()
+
+            # Going through provided model list
+            while self.estimator_generator.has_next():
+                estimator = self.estimator_generator.fit_next_estimator(
+                    X_fit, y_fit
+                )
+                predictions = self.prediction_generator.make_prediction_train(
+                    estimator, X_fit
+                )
+                failed_observations_mask = predictions != y_fit
+                failed_observations_idx_temp = failed_observations_idx[
+                    failed_observations_mask
+                ]
+
+                fitting_history_entry = np.full((X.shape[0]), False)
+                fitting_history_entry[failed_observations_idx_temp] = True
+                self.estimators.append(estimator)
+                if len(self.estimators) > 1:
+                    self.routing_model = self.__fit_routing_model(
+                        self.routing_model,
+                        X,
+                        fitting_history + [fitting_history_entry],
+                    )
+                # predictions = self.predict(X)
+                current_score = self.evaluate_hellsemble(X, y)
+                self.estimators.pop()
+
+                if current_score >= best_ensemble_score:
+                    best_model = estimator
+                    best_ensemble_score = current_score
+
+            # Best model from iteration is added to estiamtors sequence
+            if best_model is not None and best_ensemble_score >= best_score:
+                self.estimators.append(best_model)
+                best_score = best_ensemble_score
+                predictions = self.prediction_generator.make_prediction_train(
+                    best_model, X_fit
+                )
+                failed_observations_mask = predictions != y_fit
+                failed_observations_idx = failed_observations_idx[
+                    failed_observations_mask
+                ]
+
+                fitting_history_entry = np.full((X.shape[0]), False)
+                fitting_history_entry[failed_observations_idx] = True
+                fitting_history.append(fitting_history_entry)
+                X_fit, y_fit = (
+                    X_fit[failed_observations_mask],
+                    y_fit[failed_observations_mask],
+                )
+
+                if len(failed_observations_idx) == 0:
+                    break
+            else:
+                break
+        return fitting_history
+
     def __fitting_stop_condition(
         self, fitting_history: list[np.ndarray]
     ) -> bool:
@@ -217,3 +344,37 @@ class Hellsemble(BaseEstimator):
             len(fitting_history) - 1
         )
         return routing_model_target
+
+    def evaluate_hellsemble(
+        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
+    ):
+        """
+        Evaluates hellsemble based on primary metric used
+        for training in a greedy mode. It predicts labels
+        or probabilities on provided dataset to score them against
+        known labels and return calculated value.
+
+        Args:
+            X (pd.DataFrame | np.ndarray): Feature matrix.
+            y (np.ndarray | pd.Series): Target vector
+
+        Returns:
+            np.float64: metric score
+        """
+        metrics_map = {
+            "roc_auc": roc_auc_score,
+            "accuracy": accuracy_score,
+            "balanced_accuracy": balanced_accuracy_score,
+            "f1": f1_score,
+        }
+
+        if callable(self.metric):
+            y_pred_proba = self.predict_proba(X)[:, 1]
+            return self.metric(y, y_pred_proba)
+
+        if self.metric == "roc_auc":
+            y_pred_proba = self.predict_proba(X)[:, 1]
+            return metrics_map["roc_auc"](y, y_pred_proba)
+
+        y_pred = self.predict(X)
+        return metrics_map[self.metric](y, y_pred)
