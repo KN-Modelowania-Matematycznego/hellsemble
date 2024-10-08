@@ -7,7 +7,7 @@ import json
 import os
 from hellsemble.hellsemble import Hellsemble
 from hellsemble.estimator_generator import EstimatorGenerator
-from hellsemble.predction_generator import FixedThresholdPredictionGenerator
+from hellsemble.prediction_generator import FixedThresholdPredictionGenerator
 from loguru import logger
 from testing.automl_config import AutoMLConfig
 from scipy.stats import rankdata
@@ -249,12 +249,12 @@ class HellsembleExperiment:
                 try:
                     results[dataset_name]["hellsemble"].update(
                         self._train_and_test_hellsemble(
-                            train_file, test_file, "Sequential"
+                            train_file, test_file, "sequential"
                         )
                     )
                 except Exception as e:
                     logger.error(
-                        f"Error running Sequential Hellsemble experiment for dataset {dataset_name}: {e}"
+                        f"Error running sequential Hellsemble experiment for dataset {dataset_name}: {e}"
                     )
                 try:
                     results[dataset_name]["hellsemble"].update(
