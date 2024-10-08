@@ -1,7 +1,10 @@
 # Python 3.10
 scikit-learn==1.5.0
 pandas==2.2.2
-numpy==1.23.5
+
+numpy==2.0.0
+pydantic==2.9.2
+
 
 # Development
 black==24.4.2

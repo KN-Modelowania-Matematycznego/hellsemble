@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 import numpy as np
 
-from hellsemble.predction_generator import FixedThresholdPredictionGenerator
+from hellsemble.prediction_generator import FixedThresholdPredictionGenerator
 
 
 def test_fixed_threshold_prediction_generator_make_prediction_train() -> None:
