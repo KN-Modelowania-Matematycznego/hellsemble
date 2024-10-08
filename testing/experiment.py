@@ -1,6 +1,7 @@
 from typing import Dict, List, Callable
 from sklearn.base import BaseEstimator, ClassifierMixin
 import pandas as pd
+import numpy as np
 from datetime import datetime
 import json
 import os
@@ -9,6 +10,9 @@ from hellsemble.estimator_generator import EstimatorGenerator
 from hellsemble.predction_generator import FixedThresholdPredictionGenerator
 from loguru import logger
 from testing.automl_config import AutoMLConfig
+from scipy.stats import rankdata
+import scikit_posthocs as sp
+import matplotlib.pyplot as plt
 
 
 class HellsembleExperiment:
@@ -121,6 +125,81 @@ class HellsembleExperiment:
             "experiment_type": self.experiment_type,
         }
 
+    def _calculate_adtm(self, results: Dict) -> Dict:
+        adtm_scores = {}
+        model_metrics = {}
+
+        for dataset, result in results.items():
+            for model_type, model_results in result.items():
+                for model_name, metric in model_results.items():
+                    if model_name not in model_metrics:
+                        model_metrics[model_name] = []
+                    model_metrics[model_name].append(metric)
+
+        for model_name, metrics in model_metrics.items():
+            adtm_sum = 0
+            count = len(metrics)
+            metric_best = max(metrics)
+            metric_worst = min(metrics)
+            for metric in metrics:
+                adtm_sum += (metric - metric_worst) / (metric_best - metric_worst)
+            adtm_scores[model_name] = adtm_sum / count if count > 0 else 0
+
+        return adtm_scores
+
+    def _calculate_ranks(self, results: Dict) -> Dict:
+
+        model_scores = {}
+        for dataset, data in results.items():
+            for model_type, models in data.items():
+                for model, score in models.items():
+                    if model not in model_scores:
+                        model_scores[model] = []
+                    model_scores[model].append(score)
+
+        ranks = []
+        for dataset, data in results.items():
+            scores = []
+            models = []
+            for model_type, models_data in data.items():
+                for model, score in models_data.items():
+                    scores.append(score)
+                    models.append(model)
+            ranks.append(rankdata(scores).tolist())
+        ranks_df = pd.DataFrame(ranks, columns=models)
+        average_ranks = {model: 0 for model in model_scores.keys()}
+        for rank in ranks:
+            for i, model in enumerate(models):
+                average_ranks[model] += rank[i]
+        average_ranks = {
+            model: rank / len(results) for model, rank in average_ranks.items()
+        }
+
+        return average_ranks, ranks_df
+
+    def _generate_CD_plot(
+        self, average_ranks: Dict[str, float], ranks_df: pd.DataFrame
+    ):
+        average_ranks_list = list(average_ranks.values())
+        model_names = list(average_ranks.keys())
+
+        # Debug prints
+        print("Average Ranks List:", average_ranks_list)
+        print("Model Names:", model_names)
+        print("Ranks DataFrame:\n", ranks_df)
+
+        # Check if average_ranks_list is not empty
+        if len(average_ranks_list) == 0:
+            print("Error: `average_ranks_list` is empty.")
+            return
+
+        # Perform the Nemenyi test
+        nemenyi_results = sp.posthoc_nemenyi_friedman(ranks_df)
+
+        # Generate the CD plot
+        sp.sign_plot(nemenyi_results, labels=model_names)
+        plt.show()
+
     def run(self):
 
         logger.info("Running experiment for:")
@@ -186,7 +265,17 @@ class HellsembleExperiment:
                         f"Error running greedy Hellsemble experiment for dataset {dataset_name}: {e}"
                     )
 
+        average_ranks, ranks_df = self._calculate_ranks(results)
+
+        logger.info(f"Average ranks = {average_ranks}")
+        self._generate_CD_plot(average_ranks, ranks_df)
+
         logger.info(f"Saving results to {self.output_dir}")
+        result_eval = self._calculate_adtm(results)
+        logger.info(f"ADTM score = {result_eval}")
+
+        results["average_ranks"] = average_ranks
+        results["ADTM"] = result_eval
 
         with open(f"{self.output_dir}/experiment_results.json", "w") as json_file:
             json.dump(results, json_file)

@@ -16,7 +16,8 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, f1_score
 
 # from testing.autosklearn_config import AutoSklearnConfig
-from testing.autogluon_config import AutoGluonConfig
+
+# from testing.autogluon_config import AutoGluonConfig
 
 
 ###
@@ -24,11 +25,11 @@ from testing.autogluon_config import AutoGluonConfig
 ###
 
 # Define the directories containing the training and test data.
-train_dir = "resources/data/openml/train/automl"
-test_dir = "resources/data/openml/test/automl"
+train_dir = "resources/data/openml/train"
+test_dir = "resources/data/openml/test"
 
 # Define the directory to save the results to.
-output_dir = "resources/data/openml/results/automl"
+output_dir = "resources/data/openml/results"
 
 # Define the base models to train and test.
 models = [
@@ -42,7 +43,6 @@ estimators_generator = PredefinedEstimatorsGenerator
 
 # Define the metric used to evaluate the models.
 metric = accuracy_score
-automl = AutoGluonConfig()
 
 experiment = HellsembleExperiment(
     train_dir=train_dir,
@@ -52,7 +52,7 @@ experiment = HellsembleExperiment(
     routing_model=routing_model,
     metric=metric,
     estimators_generator=estimators_generator,
-    automl=automl,
+    automl=None,
     experiment_type="full",
 )
 
