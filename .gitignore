@@ -4,4 +4,4 @@
 notebooks
 **/*.csv
 model_comparison.html
-resources/data/openml
+resources/data

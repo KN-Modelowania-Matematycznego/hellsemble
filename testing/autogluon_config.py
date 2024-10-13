@@ -7,11 +7,19 @@ from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.base import BaseEstimator, ClassifierMixin
-from testing.automl_config import AutoMLConfig
-from autogluon.tabular import TabularDataset, TabularPredictor
+from testing.automl_config import AutoMLRun
+
+try:
+    from autogluon.tabular import TabularDataset, TabularPredictor
+except ModuleNotFoundError:
+    Warning(
+        "Autogluon is not installed. Some functionalities may not work.",
+        ImportWarning,
+    )
+from loguru import logger
 
 
-class AutoGluonConfig(AutoMLConfig):
+class AutoGluonRun(AutoMLRun):
     """
     A class for creating a automl configuration for our hellse,ble experiment.
     Right now set to fit autogluon ensemble.
@@ -19,23 +27,17 @@ class AutoGluonConfig(AutoMLConfig):
 
     def __init__(
         self,
-        predefined_model_set: Dict[str, str] = {
-            "GBM": {},  # LightGBM
-            "CAT": {},  # CatBoost
-            "XGB": {},  # XGBoost
-            "XT": {},  # Extra Trees
-            "LR": {},  # Logistic Regression
-            "RF": {},  # Random Forest
-            "KNN": {},  # k-Nearest Neighbors
-        },
+        predefined_model_set: Dict[str, str],
         num_stack_levels: int = 1,
         num_bag_folds: int = 5,
+        time_limit: int = 60,
     ):
         self.predefined_model_set = predefined_model_set
         self.num_stack_levels = num_stack_levels
         self.num_bag_folds = num_bag_folds
+        self.time_limit = time_limit
 
-    def _automl_model_map(self) -> Dict[str, str]:
+    def automl_model_map(self) -> Dict[str, str]:
         full_model_set = {
             "LightGBM": LGBMClassifier(),  # LightGBM
             "CatBoost": CatBoostClassifier(),  # CatBoost
@@ -47,15 +49,15 @@ class AutoGluonConfig(AutoMLConfig):
         }
         return full_model_set
 
-    def _run_automl(self, train_data: pd.DataFrame) -> list[str]:
-
+    def run_automl(self, train_data: pd.DataFrame) -> list[str]:
+        logger.info(f"Time set for single AutoGluon run: {self.time_limit}")
         predictor = TabularPredictor(
             label="target",
             path="testing/__pycache__",
         ).fit(
             train_data=train_data,
             hyperparameters=self.predefined_model_set,
-            time_limit=60,
+            time_limit=self.time_limit,
             num_stack_levels=self.num_stack_levels,
             num_bag_folds=self.num_bag_folds,
             verbosity=0,
@@ -71,7 +73,7 @@ class AutoGluonConfig(AutoMLConfig):
         return models
 
     def get_models_from_automl(self, train_data: pd.DataFrame) -> list[ClassifierMixin]:
-        model_map = self._automl_model_map()
-        models = self._run_automl(train_data=train_data)
+        model_map = self.automl_model_map()
+        models = self.run_automl(train_data=train_data)
         model_objects = [model_map[model] for model in models if model in model_map]
         return model_objects

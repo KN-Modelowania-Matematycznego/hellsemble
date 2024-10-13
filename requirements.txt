@@ -13,9 +13,9 @@ isort==5.13.2
 pytest==8.2.2
 loguru==0.7.2
 openml==0.14.2
-scikit-posthocs
-matplotlib
-lightgbm
-catboost
-xgboost
+scikit-posthocs==0.9.0
+matplotlib==3.9.1
+lightgbm==4.3.0
+catboost==1.2.5
+xgboost==2.0.3
 #autogluon and/or autosklearn need to be installed separately (best through conda)

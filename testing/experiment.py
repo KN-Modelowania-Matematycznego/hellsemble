@@ -5,14 +5,15 @@ import numpy as np
 from datetime import datetime
 import json
 import os
-from hellsemble.hellsemble import Hellsemble
-from hellsemble.estimator_generator import EstimatorGenerator
-from hellsemble.prediction_generator import FixedThresholdPredictionGenerator
+from testing.test_hellsemble.hellsemble import Hellsemble
+from testing.test_hellsemble.estimator_generator import EstimatorGenerator
+from testing.test_hellsemble.prediction_generator import (
+    FixedThresholdPredictionGenerator,
+)
 from loguru import logger
-from testing.automl_config import AutoMLConfig
-from scipy.stats import rankdata
-import scikit_posthocs as sp
-import matplotlib.pyplot as plt
+from testing.automl_config import AutoMLRun
+from testing.eval_utils import calculate_ranks, calculate_adtm, generate_CD_plot
+from pathlib import Path
 
 
 class HellsembleExperiment:
@@ -50,9 +51,10 @@ class HellsembleExperiment:
         output_dir: str,
         models: List[ClassifierMixin],
         routing_model: ClassifierMixin,
-        metric: Callable,
+        metric: Callable[[np.ndarray, np.ndarray], float],
         estimators_generator: EstimatorGenerator,
-        automl: AutoMLConfig = None,
+        prediction_generator: FixedThresholdPredictionGenerator,
+        automl: AutoMLRun = None,
         experiment_type: str = "full",
     ):
         self.train_dir = train_dir
@@ -64,6 +66,7 @@ class HellsembleExperiment:
         self.estimators_generator = estimators_generator
         self.automl = automl
         self.experiment_type = experiment_type
+        self.prediction_generator = prediction_generator
 
     def _get_data_from_file(self, train_file: str, test_file: str):
         train_data = pd.read_csv(train_file)
@@ -76,7 +79,7 @@ class HellsembleExperiment:
 
         return X_train, X_test, y_train, y_test
 
-    def _train_and_test_base_models(
+    def _get_base_model_results(
         self, train_file: str, test_file: str
     ) -> Dict[str, float]:
         X_train, X_test, y_train, y_test = self._get_data_from_file(
@@ -89,8 +92,8 @@ class HellsembleExperiment:
 
             model.fit(X_train, y_train)
             y_pred = model.predict(X_test)
-            eval = self.metric(y_test, y_pred)
-            results[model.__repr__()] = eval
+            evaluation = self.metric(y_test, y_pred)
+            results[model.__repr__()] = evaluation
 
         return results
 
@@ -103,16 +106,16 @@ class HellsembleExperiment:
 
         estimator = Hellsemble(
             self.estimators_generator(self.models),
-            FixedThresholdPredictionGenerator(0.5),
+            self.prediction_generator,
             self.routing_model,
             mode=mode,
         )
 
         estimator.fit(X_train, y_train)
         y_pred = estimator.predict(X_test)
-        eval = self.metric(y_test, y_pred)
+        evaluation = self.metric(y_test, y_pred)
 
-        return {f"Hellsemble_{mode}": eval}
+        return {f"Hellsemble_{mode}": evaluation}
 
     def _create_experiment_config(self):
         return {
@@ -125,101 +128,19 @@ class HellsembleExperiment:
             "experiment_type": self.experiment_type,
         }
 
-    def _calculate_adtm(self, results: Dict) -> Dict:
-        adtm_scores = {}
-        model_metrics = {}
-
-        for dataset, result in results.items():
-            for model_type, model_results in result.items():
-                for model_name, metric in model_results.items():
-                    if model_name not in model_metrics:
-                        model_metrics[model_name] = []
-                    model_metrics[model_name].append(metric)
-
-        for model_name, metrics in model_metrics.items():
-            adtm_sum = 0
-            count = len(metrics)
-            metric_best = max(metrics)
-            metric_worst = min(metrics)
-            for metric in metrics:
-                adtm_sum += (metric - metric_worst) / (metric_best - metric_worst)
-            adtm_scores[model_name] = adtm_sum / count if count > 0 else 0
-
-        return adtm_scores
-
-    def _calculate_ranks(self, results: Dict) -> Dict:
-
-        model_scores = {}
-        for dataset, data in results.items():
-            for model_type, models in data.items():
-                for model, score in models.items():
-                    if model not in model_scores:
-                        model_scores[model] = []
-                    model_scores[model].append(score)
-
-        ranks = []
-        for dataset, data in results.items():
-            scores = []
-            models = []
-            for model_type, models_data in data.items():
-                for model, score in models_data.items():
-                    scores.append(score)
-                    models.append(model)
-            ranks.append(rankdata(scores).tolist())
-        ranks_df = pd.DataFrame(ranks, columns=models)
-        average_ranks = {model: 0 for model in model_scores.keys()}
-        for rank in ranks:
-            for i, model in enumerate(models):
-                average_ranks[model] += rank[i]
-        average_ranks = {
-            model: rank / len(results) for model, rank in average_ranks.items()
-        }
-
-        return average_ranks, ranks_df
-
-    def _generate_CD_plot(
-        self, average_ranks: Dict[str, float], ranks_df: pd.DataFrame
-    ):
-        average_ranks_list = list(average_ranks.values())
-        model_names = list(average_ranks.keys())
-
-        # Debug prints
-        print("Average Ranks List:", average_ranks_list)
-        print("Model Names:", model_names)
-        print("Ranks DataFrame:\n", ranks_df)
-
-        # Check if average_ranks_list is not empty
-        if len(average_ranks_list) == 0:
-            print("Error: `average_ranks_list` is empty.")
-            return
-
-        # Perform the Nemenyi test
-        nemenyi_results = sp.posthoc_nemenyi_friedman(ranks_df)
-
-        # Generate the CD plot
-        sp.sign_plot(nemenyi_results, labels=model_names)
-        plt.show()
-
     def run(self):
 
-        logger.info("Running experiment for:")
         if not self.automl:
-            logger.info(f"  Models: {self.models}")
+            logger.info(f"Running experiment for models: {self.models}")
         else:
-            logger.info("  Using AutoML to generate models for each data set.")
+            logger.info(
+                " Running experiment and using AutoML to generate models for each data set."
+            )
 
         results = {}
 
-        train_files = [
-            os.path.join(self.train_dir, f)
-            for f in os.listdir(self.train_dir)
-            if f.endswith(".csv")
-        ]
-        test_files = [
-            os.path.join(self.test_dir, f)
-            for f in os.listdir(self.test_dir)
-            if f.endswith(".csv")
-        ]
+        train_files = list(Path(self.train_dir).rglob("*.csv"))
+        test_files = list(Path(self.test_dir).rglob("*.csv"))
 
         for train_file, test_file in zip(train_files, test_files):
             dataset_name = os.path.basename(train_file).replace(".csv", "")
@@ -234,8 +155,8 @@ class HellsembleExperiment:
             logger.info(f"Running experiment for dataset: {dataset_name}")
             if self.experiment_type in ["full", "base_models"]:
                 try:
-                    results[dataset_name]["base_models"] = (
-                        self._train_and_test_base_models(train_file, test_file)
+                    results[dataset_name]["base_models"] = self._get_base_model_results(
+                        train_file, test_file
                     )
                 except Exception as e:
                     logger.error(
@@ -265,13 +186,13 @@ class HellsembleExperiment:
                         f"Error running greedy Hellsemble experiment for dataset {dataset_name}: {e}"
                     )
 
-        average_ranks, ranks_df = self._calculate_ranks(results)
+        average_ranks, ranks_df = calculate_ranks(results)
 
         logger.info(f"Average ranks = {average_ranks}")
-        self._generate_CD_plot(average_ranks, ranks_df)
+        generate_CD_plot(average_ranks, ranks_df)
 
         logger.info(f"Saving results to {self.output_dir}")
-        result_eval = self._calculate_adtm(results)
+        result_eval = calculate_adtm(results)
         logger.info(f"ADTM score = {result_eval}")
 
         results["average_ranks"] = average_ranks

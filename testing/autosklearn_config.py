@@ -12,13 +12,21 @@ from sklearn.linear_model import PassiveAggressiveClassifier, SGDClassifier
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
-import autosklearn.classification
-from testing.automl_config import AutoMLConfig
+
+try:
+    import autosklearn.classification
+except ModuleNotFoundError:
+    Warning(
+        "AutoSklearn is not installed. Some functionalities may not work.",
+        ImportWarning,
+    )
+from testing.automl_config import AutoMLRun
 from typing import Dict
 from sklearn.base import BaseEstimator, ClassifierMixin
+from loguru import logger
 
 
-class AutoSklearnConfig(AutoMLConfig):
+class AutoSklearnRun(AutoMLRun):
     def __init__(
         self,
         time_left_for_this_task: int = 120,
@@ -29,7 +37,7 @@ class AutoSklearnConfig(AutoMLConfig):
         self.per_run_time_limit = per_run_time_limit
         self.ensemble_size = ensemble_size
 
-    def _automl_model_map(self) -> Dict[str, str]:
+    def automl_model_map(self) -> Dict[str, str]:
         return {
             "adaboost": AdaBoostClassifier(),
             "bernoulli_nb": BernoulliNB(),
@@ -49,7 +57,10 @@ class AutoSklearnConfig(AutoMLConfig):
             "sgd": SGDClassifier(),
         }
 
-    def _run_automl(self, train_data: pd.DataFrame) -> list[str]:
+    def run_automl(self, train_data: pd.DataFrame) -> list[str]:
+        logger.info(
+            f"Time set for single AutoSklearn run: {self.time_left_for_this_task}"
+        )
         X = train_data.drop(columns=["target"])
         y = train_data["target"]
 
@@ -67,7 +78,7 @@ class AutoSklearnConfig(AutoMLConfig):
         return models
 
     def get_models_from_automl(self, train_data: pd.DataFrame) -> list[ClassifierMixin]:
-        model_map = self._automl_model_map()
-        models = self._run_automl(train_data=train_data)
+        model_map = self.automl_model_map()
+        models = self.run_automl(train_data=train_data)
         model_objects = [model_map[model] for model in models if model in model_map]
         return model_objects
