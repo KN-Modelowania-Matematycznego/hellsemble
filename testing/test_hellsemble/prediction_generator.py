@@ -15,7 +15,7 @@ class PredictionGenerator(ABC):
 
     @abstractmethod
     def make_prediction_train(
-        self, estimator: ClassifierMixin, X: np.ndarray | pd.DataFrame
+        self, estimator: ClassifierMixin, X: Union[pd.DataFrame, np.ndarray]
     ) -> np.ndarray:
         """
         Generates prediction based on provided estimator and data. Note that
@@ -25,7 +25,7 @@ class PredictionGenerator(ABC):
         Args:
             estimator (ClassifierMixin): Estimator which produces predictions
                 for further prediction logic.
-                X (np.ndarray | pd.DataFrame): Data to predict on.
+                X (Union[pd.DataFrame, np.ndarray]): Data to predict on.
 
         Returns:
             np.ndarray: Output predictions.
@@ -33,7 +33,7 @@ class PredictionGenerator(ABC):
         pass
 
     def make_prediction(
-        self, estimator: ClassifierMixin, X: np.ndarray | pd.DataFrame
+        self, estimator: ClassifierMixin, X: Union[pd.DataFrame, np.ndarray]
     ) -> np.ndarray:
         """
         Generates prediction in the evaluation phase. In this method, no
@@ -43,7 +43,7 @@ class PredictionGenerator(ABC):
         Args:
             estimator (ClassifierMixin): Estimator which produces predictions
                 for further prediction logic.
-                X (np.ndarray | pd.DataFrame): Data to predict.
+                X (Union[pd.DataFrame, np.ndarray]): Data to predict.
 
         Returns:
             np.ndarray: Output predictions.
@@ -67,7 +67,7 @@ class FixedThresholdPredictionGenerator(PredictionGenerator):
         self.threshold = threshold
 
     def make_prediction_train(
-        self, estimator: ClassifierMixin, X: np.ndarray | pd.DataFrame
+        self, estimator: ClassifierMixin, X: Union[pd.DataFrame, np.ndarray]
     ) -> np.ndarray:
         assert hasattr(
             estimator, "predict_proba"

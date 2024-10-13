@@ -1,5 +1,7 @@
 .vscode
 **__pycache__**
 .venv
-notebooks/.*
+notebooks
 **/*.csv
+model_comparison.html
+resources/data
