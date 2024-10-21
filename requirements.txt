@@ -1,8 +1,10 @@
 # Python 3.10
 scikit-learn==1.5.0
 pandas==2.2.2
+
 numpy==2.0.0
 pydantic==2.9.2
+
 
 # Development
 black==24.4.2
@@ -11,3 +13,9 @@ isort==5.13.2
 pytest==8.2.2
 loguru==0.7.2
 openml==0.14.2
+scikit-posthocs==0.9.0
+matplotlib==3.9.1
+lightgbm==4.3.0
+catboost==1.2.5
+xgboost==2.0.3
+#autogluon and/or autosklearn need to be installed separately (best through conda)
