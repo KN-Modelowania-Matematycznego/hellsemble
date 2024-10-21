@@ -1,0 +1,586 @@
+{
+    "spambase": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9087749782797567,
+            "RandomForestClassifier()": 0.9548218940052129,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9565595134665508,
+            "LogisticRegression()": 0.9304952215464813,
+            "DecisionTreeClassifier()": 0.9131190269331017,
+            "LinearDiscriminantAnalysis()": 0.8887923544743701,
+            "QuadraticDiscriminantAnalysis()": 0.8392701998262381,
+            "GaussianNB()": 0.8227628149435273
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9183318853171155,
+            "Hellsemble_greedy": 0.9165942658557776
+        }
+    },
+    "credit-approval": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7976878612716763,
+            "RandomForestClassifier()": 0.8497109826589595,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.861271676300578,
+            "LogisticRegression()": 0.838150289017341,
+            "DecisionTreeClassifier()": 0.791907514450867,
+            "LinearDiscriminantAnalysis()": 0.8208092485549133,
+            "QuadraticDiscriminantAnalysis()": 0.5491329479768786,
+            "GaussianNB()": 0.7109826589595376
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.7976878612716763,
+            "Hellsemble_greedy": 0.7630057803468208
+        }
+    },
+    "dresses-sales": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.536,
+            "RandomForestClassifier()": 0.672,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.6,
+            "LogisticRegression()": 0.672,
+            "DecisionTreeClassifier()": 0.568,
+            "LinearDiscriminantAnalysis()": 0.648,
+            "QuadraticDiscriminantAnalysis()": 0.464,
+            "GaussianNB()": 0.416
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.528,
+            "Hellsemble_greedy": 0.56
+        }
+    },
+    "numerai28.6": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.5074335548172757,
+            "RandomForestClassifier()": 0.5085548172757475,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.5108388704318937,
+            "LogisticRegression()": 0.5213039867109635,
+            "DecisionTreeClassifier()": 0.5009551495016611,
+            "LinearDiscriminantAnalysis()": 0.5211378737541528,
+            "QuadraticDiscriminantAnalysis()": 0.5190614617940199,
+            "GaussianNB()": 0.5178986710963455
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.5076827242524917,
+            "Hellsemble_greedy": 0.5009551495016611
+        }
+    },
+    "pc3": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8797953964194374,
+            "RandomForestClassifier()": 0.8925831202046036,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.8925831202046036,
+            "LogisticRegression()": 0.887468030690537,
+            "DecisionTreeClassifier()": 0.8618925831202046,
+            "LinearDiscriminantAnalysis()": 0.8772378516624041,
+            "QuadraticDiscriminantAnalysis()": 0.7135549872122762,
+            "GaussianNB()": 0.80306905370844
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8797953964194374,
+            "Hellsemble_greedy": 0.8695652173913043
+        }
+    },
+    "PhishingWebsites": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9504341534008683,
+            "RandomForestClassifier()": 0.9710564399421129,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9667149059334298,
+            "LogisticRegression()": 0.9341534008683068,
+            "DecisionTreeClassifier()": 0.9565846599131693,
+            "LinearDiscriminantAnalysis()": 0.9232995658465991,
+            "QuadraticDiscriminantAnalysis()": 0.7521707670043415,
+            "GaussianNB()": 0.7858176555716353
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9504341534008683,
+            "Hellsemble_greedy": 0.9605643994211288
+        }
+    },
+    "pc1": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9388489208633094,
+            "RandomForestClassifier()": 0.935251798561151,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9316546762589928,
+            "LogisticRegression()": 0.9244604316546763,
+            "DecisionTreeClassifier()": 0.8920863309352518,
+            "LinearDiscriminantAnalysis()": 0.920863309352518,
+            "QuadraticDiscriminantAnalysis()": 0.9280575539568345,
+            "GaussianNB()": 0.8705035971223022
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9316546762589928,
+            "Hellsemble_greedy": 0.8992805755395683
+        }
+    },
+    "bank-marketing": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8993187649296647,
+            "RandomForestClassifier()": 0.9065734760683004,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.906661948155357,
+            "LogisticRegression()": 0.9006458462355127,
+            "DecisionTreeClassifier()": 0.8758736618596833,
+            "LinearDiscriminantAnalysis()": 0.9021498717154738,
+            "QuadraticDiscriminantAnalysis()": 0.8732194992479873,
+            "GaussianNB()": 0.8668495089799169
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8994072370167212,
+            "Hellsemble_greedy": 0.8773776873396444
+        }
+    },
+    "kc1": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8446969696969697,
+            "RandomForestClassifier()": 0.8560606060606061,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.8560606060606061,
+            "LogisticRegression()": 0.865530303030303,
+            "DecisionTreeClassifier()": 0.8238636363636364,
+            "LinearDiscriminantAnalysis()": 0.8560606060606061,
+            "QuadraticDiscriminantAnalysis()": 0.8541666666666666,
+            "GaussianNB()": 0.8428030303030303
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8371212121212122,
+            "Hellsemble_greedy": 0.8087121212121212
+        }
+    },
+    "kc2": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7938931297709924,
+            "RandomForestClassifier()": 0.8015267175572519,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.816793893129771,
+            "LogisticRegression()": 0.816793893129771,
+            "DecisionTreeClassifier()": 0.7938931297709924,
+            "LinearDiscriminantAnalysis()": 0.7938931297709924,
+            "QuadraticDiscriminantAnalysis()": 0.816793893129771,
+            "GaussianNB()": 0.816793893129771
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.7862595419847328,
+            "Hellsemble_greedy": 0.7862595419847328
+        }
+    },
+    "banknote-authentication": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9941690962099126,
+            "RandomForestClassifier()": 0.9795918367346939,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9825072886297376,
+            "LogisticRegression()": 0.9795918367346939,
+            "DecisionTreeClassifier()": 0.9766763848396501,
+            "LinearDiscriminantAnalysis()": 0.9708454810495627,
+            "QuadraticDiscriminantAnalysis()": 0.9795918367346939,
+            "GaussianNB()": 0.8367346938775511
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9941690962099126,
+            "Hellsemble_greedy": 0.9766763848396501
+        }
+    },
+    "ilpd": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.6575342465753424,
+            "RandomForestClassifier()": 0.7191780821917808,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.726027397260274,
+            "LogisticRegression()": 0.7328767123287672,
+            "DecisionTreeClassifier()": 0.636986301369863,
+            "LinearDiscriminantAnalysis()": 0.726027397260274,
+            "QuadraticDiscriminantAnalysis()": 0.5273972602739726,
+            "GaussianNB()": 0.5342465753424658
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.6506849315068494,
+            "Hellsemble_greedy": 0.6301369863013698
+        }
+    },
+    "adult": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8303169273605765,
+            "RandomForestClassifier()": 0.849479977069855,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.8699533207763492,
+            "LogisticRegression()": 0.8488248300712472,
+            "DecisionTreeClassifier()": 0.8118909180247318,
+            "LinearDiscriminantAnalysis()": 0.8374416509704365,
+            "QuadraticDiscriminantAnalysis()": 0.45156006879043487,
+            "GaussianNB()": 0.583817869134387
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8249119646220621,
+            "Hellsemble_greedy": 0.8131193186471215
+        }
+    },
+    "Internet-Advertisements": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9621951219512195,
+            "RandomForestClassifier()": 0.973170731707317,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9719512195121951,
+            "LogisticRegression()": 0.9695121951219512,
+            "DecisionTreeClassifier()": 0.9682926829268292,
+            "LinearDiscriminantAnalysis()": 0.9609756097560975,
+            "QuadraticDiscriminantAnalysis()": 0.9426829268292682,
+            "GaussianNB()": 0.8085365853658537
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9621951219512195,
+            "Hellsemble_greedy": 0.9682926829268292
+        }
+    },
+    "pc4": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9013698630136986,
+            "RandomForestClassifier()": 0.9095890410958904,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9178082191780822,
+            "LogisticRegression()": 0.9178082191780822,
+            "DecisionTreeClassifier()": 0.8821917808219178,
+            "LinearDiscriminantAnalysis()": 0.915068493150685,
+            "QuadraticDiscriminantAnalysis()": 0.547945205479452,
+            "GaussianNB()": 0.8657534246575342
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9041095890410958,
+            "Hellsemble_greedy": 0.8794520547945206
+        }
+    },
+    "credit-g": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.748,
+            "RandomForestClassifier()": 0.76,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.784,
+            "LogisticRegression()": 0.776,
+            "DecisionTreeClassifier()": 0.724,
+            "LinearDiscriminantAnalysis()": 0.788,
+            "QuadraticDiscriminantAnalysis()": 0.732,
+            "GaussianNB()": 0.716
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.748,
+            "Hellsemble_greedy": 0.74
+        }
+    },
+    "Bioresponse": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7484008528784648,
+            "RandomForestClassifier()": 0.8070362473347548,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.7867803837953091,
+            "LogisticRegression()": 0.7270788912579957,
+            "DecisionTreeClassifier()": 0.7174840085287847,
+            "LinearDiscriminantAnalysis()": 0.6279317697228145,
+            "QuadraticDiscriminantAnalysis()": 0.5746268656716418,
+            "GaussianNB()": 0.6130063965884861
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.755863539445629,
+            "Hellsemble_greedy": 0.7014925373134329
+        }
+    },
+    "blood-transfusion-service-center": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7647058823529411,
+            "RandomForestClassifier()": 0.7647058823529411,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.7754010695187166,
+            "LogisticRegression()": 0.7647058823529411,
+            "DecisionTreeClassifier()": 0.7593582887700535,
+            "LinearDiscriminantAnalysis()": 0.7647058823529411,
+            "QuadraticDiscriminantAnalysis()": 0.7700534759358288,
+            "GaussianNB()": 0.732620320855615
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.7754010695187166,
+            "Hellsemble_greedy": 0.5775401069518716
+        }
+    },
+    "wilt": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9628099173553719,
+            "RandomForestClassifier()": 0.9785123966942149,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9818181818181818,
+            "LogisticRegression()": 0.952892561983471,
+            "DecisionTreeClassifier()": 0.9760330578512396,
+            "LinearDiscriminantAnalysis()": 0.9413223140495868,
+            "QuadraticDiscriminantAnalysis()": 0.9768595041322314,
+            "GaussianNB()": 0.8801652892561983
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9628099173553719,
+            "Hellsemble_greedy": 0.9776859504132231
+        }
+    },
+    "madelon": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.5430769230769231,
+            "RandomForestClassifier()": 0.6892307692307692,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.8184615384615385,
+            "LogisticRegression()": 0.56,
+            "DecisionTreeClassifier()": 0.7584615384615384,
+            "LinearDiscriminantAnalysis()": 0.563076923076923,
+            "QuadraticDiscriminantAnalysis()": 0.4815384615384615,
+            "GaussianNB()": 0.58
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.5430769230769231,
+            "Hellsemble_greedy": 0.4815384615384615
+        }
+    },
+    "ozone-level-8hr": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9479495268138801,
+            "RandomForestClassifier()": 0.944794952681388,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9479495268138801,
+            "LogisticRegression()": 0.9400630914826499,
+            "DecisionTreeClassifier()": 0.9132492113564669,
+            "LinearDiscriminantAnalysis()": 0.9369085173501577,
+            "QuadraticDiscriminantAnalysis()": 0.9211356466876972,
+            "GaussianNB()": 0.6719242902208202
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9479495268138801,
+            "Hellsemble_greedy": 0.9148264984227129
+        }
+    },
+    "jm1": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7983100661278472,
+            "RandomForestClassifier()": 0.8119030124908155,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.8060249816311535,
+            "LogisticRegression()": 0.8089639970609845,
+            "DecisionTreeClassifier()": 0.7402645113886848,
+            "LinearDiscriminantAnalysis()": 0.8093313739897134,
+            "QuadraticDiscriminantAnalysis()": 0.7950036737692873,
+            "GaussianNB()": 0.7983100661278472
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.7979426891991183,
+            "Hellsemble_greedy": 0.7472446730345335
+        }
+    },
+    "phoneme": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8638045891931903,
+            "RandomForestClassifier()": 0.9156180606957809,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.8971132494448557,
+            "LogisticRegression()": 0.7498149518874907,
+            "DecisionTreeClassifier()": 0.8697261287934863,
+            "LinearDiscriminantAnalysis()": 0.7535159141376758,
+            "QuadraticDiscriminantAnalysis()": 0.7698001480384901,
+            "GaussianNB()": 0.7335307179866766
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8726868985936344,
+            "Hellsemble_greedy": 0.8652849740932642
+        }
+    },
+    "diabetes": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7447916666666666,
+            "RandomForestClassifier()": 0.7760416666666666,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.734375,
+            "LogisticRegression()": 0.7708333333333334,
+            "DecisionTreeClassifier()": 0.6875,
+            "LinearDiscriminantAnalysis()": 0.78125,
+            "QuadraticDiscriminantAnalysis()": 0.7447916666666666,
+            "GaussianNB()": 0.7708333333333334
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.75,
+            "Hellsemble_greedy": 0.6666666666666666
+        }
+    },
+    "tic-tac-toe": {
+        "base_models": {
+            "KNeighborsClassifier()": 1.0,
+            "RandomForestClassifier()": 0.9875,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9833333333333333,
+            "LogisticRegression()": 0.975,
+            "DecisionTreeClassifier()": 0.9375,
+            "LinearDiscriminantAnalysis()": 0.975,
+            "QuadraticDiscriminantAnalysis()": 0.975,
+            "GaussianNB()": 0.6916666666666667
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 1.0,
+            "Hellsemble_greedy": 0.9208333333333333
+        }
+    },
+    "kr-vs-kp": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9499374217772215,
+            "RandomForestClassifier()": 0.9924906132665833,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9962453066332916,
+            "LogisticRegression()": 0.9624530663329162,
+            "DecisionTreeClassifier()": 0.9924906132665833,
+            "LinearDiscriminantAnalysis()": 0.9386733416770964,
+            "QuadraticDiscriminantAnalysis()": 0.5556946182728411,
+            "GaussianNB()": 0.6332916145181476
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9499374217772215,
+            "Hellsemble_greedy": 0.9949937421777222
+        }
+    },
+    "sick": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9650053022269353,
+            "RandomForestClassifier()": 0.9777306468716861,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9883351007423118,
+            "LogisticRegression()": 0.9660657476139979,
+            "DecisionTreeClassifier()": 0.9830328738069989,
+            "LinearDiscriminantAnalysis()": 0.9544008483563097,
+            "QuadraticDiscriminantAnalysis()": 0.1823966065747614,
+            "GaussianNB()": 0.36267232237539765
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9650053022269353,
+            "Hellsemble_greedy": 0.9830328738069989
+        }
+    },
+    "nomao": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9497504932110944,
+            "RandomForestClassifier()": 0.9639085528606244,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9688986886387374,
+            "LogisticRegression()": 0.9469653011488918,
+            "DecisionTreeClassifier()": 0.9453406057792735,
+            "LinearDiscriminantAnalysis()": 0.9391899733085761,
+            "QuadraticDiscriminantAnalysis()": 0.3866774979691308,
+            "GaussianNB()": 0.7983056748288268
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9497504932110944,
+            "Hellsemble_greedy": 0.9463850528025995
+        }
+    },
+    "climate-model-simulation-crashes": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9333333333333333,
+            "RandomForestClassifier()": 0.9185185185185185,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9629629629629629,
+            "LogisticRegression()": 0.9629629629629629,
+            "DecisionTreeClassifier()": 0.8962962962962963,
+            "LinearDiscriminantAnalysis()": 0.9481481481481482,
+            "QuadraticDiscriminantAnalysis()": 0.9185185185185185,
+            "GaussianNB()": 0.9333333333333333
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9333333333333333,
+            "Hellsemble_greedy": 0.9111111111111111
+        }
+    },
+    "wdbc": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9790209790209791,
+            "RandomForestClassifier()": 0.9790209790209791,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.965034965034965,
+            "LogisticRegression()": 0.9790209790209791,
+            "DecisionTreeClassifier()": 0.9370629370629371,
+            "LinearDiscriminantAnalysis()": 0.958041958041958,
+            "QuadraticDiscriminantAnalysis()": 0.9440559440559441,
+            "GaussianNB()": 0.965034965034965
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9790209790209791,
+            "Hellsemble_greedy": 0.9370629370629371
+        }
+    },
+    "electricity": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8337747175141242,
+            "RandomForestClassifier()": 0.9088100282485876,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9065148305084746,
+            "LogisticRegression()": 0.7597104519774012,
+            "DecisionTreeClassifier()": 0.8806497175141242,
+            "LinearDiscriminantAnalysis()": 0.7304908192090396,
+            "QuadraticDiscriminantAnalysis()": 0.7089512711864406,
+            "GaussianNB()": 0.7185734463276836
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8418079096045198,
+            "Hellsemble_greedy": 0.8816207627118644
+        }
+    },
+    "breast-w": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9657142857142857,
+            "RandomForestClassifier()": 0.96,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9657142857142857,
+            "LogisticRegression()": 0.9657142857142857,
+            "DecisionTreeClassifier()": 0.9428571428571428,
+            "LinearDiscriminantAnalysis()": 0.9428571428571428,
+            "QuadraticDiscriminantAnalysis()": 0.9428571428571428,
+            "GaussianNB()": 0.9542857142857143
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9657142857142857,
+            "Hellsemble_greedy": 0.9485714285714286
+        }
+    },
+    "qsar-biodeg": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8674242424242424,
+            "RandomForestClassifier()": 0.8712121212121212,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.8560606060606061,
+            "LogisticRegression()": 0.8863636363636364,
+            "DecisionTreeClassifier()": 0.8295454545454546,
+            "LinearDiscriminantAnalysis()": 0.8712121212121212,
+            "QuadraticDiscriminantAnalysis()": 0.625,
+            "GaussianNB()": 0.6742424242424242
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8712121212121212,
+            "Hellsemble_greedy": 0.821969696969697
+        }
+    },
+    "churn": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8824,
+            "RandomForestClassifier()": 0.9424,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.9472,
+            "LogisticRegression()": 0.8576,
+            "DecisionTreeClassifier()": 0.9152,
+            "LinearDiscriminantAnalysis()": 0.8448,
+            "QuadraticDiscriminantAnalysis()": 0.8576,
+            "GaussianNB()": 0.8608
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9152,
+            "Hellsemble_greedy": 0.9136
+        }
+    },
+    "cylinder-bands": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7185185185185186,
+            "RandomForestClassifier()": 0.7777777777777778,
+            "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.7777777777777778,
+            "LogisticRegression()": 0.6814814814814815,
+            "DecisionTreeClassifier()": 0.7111111111111111,
+            "LinearDiscriminantAnalysis()": 0.7111111111111111,
+            "QuadraticDiscriminantAnalysis()": 0.6370370370370371,
+            "GaussianNB()": 0.6222222222222222
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.725925925925926,
+            "Hellsemble_greedy": 0.7185185185185186
+        }
+    },
+    "average_ranks": {
+        "KNeighborsClassifier()": 5.857142857142857,
+        "RandomForestClassifier()": 8.128571428571428,
+        "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 8.571428571428571,
+        "LogisticRegression()": 6.8428571428571425,
+        "DecisionTreeClassifier()": 4.171428571428572,
+        "LinearDiscriminantAnalysis()": 5.3,
+        "QuadraticDiscriminantAnalysis()": 3.0714285714285716,
+        "GaussianNB()": 2.8,
+        "Hellsemble_sequential": 6.171428571428572,
+        "Hellsemble_greedy": 4.085714285714285
+    },
+    "ADTM": {
+        "KNeighborsClassifier()": 0.6849850787879188,
+        "RandomForestClassifier()": 0.7502142254452021,
+        "XGBClassifier(base_score=None, booster=None, callbacks=None,\n              colsample_bylevel=None, colsample_bynode=None,\n              colsample_bytree=None, device=None, early_stopping_rounds=None,\n              enable_categorical=False, eval_metric=None, feature_types=None,\n              gamma=None, grow_policy=None, importance_type=None,\n              interaction_constraints=None, learning_rate=None, max_bin=None,\n              max_cat_threshold=None, max_cat_to_onehot=None,\n              max_delta_step=None, max_depth=None, max_leaves=None,\n              min_child_weight=None, missing=nan, monotone_constraints=None,\n              multi_strategy=None, n_estimators=None, n_jobs=None,\n              num_parallel_tree=None, random_state=None, ...)": 0.7497709741819881,
+        "LogisticRegression()": 0.7161853334140786,
+        "DecisionTreeClassifier()": 0.6881030623618656,
+        "LinearDiscriminantAnalysis()": 0.6989375582544162,
+        "QuadraticDiscriminantAnalysis()": 0.6764545571650806,
+        "GaussianNB()": 0.6213560033451376,
+        "Hellsemble_sequential": 0.6879528978873052,
+        "Hellsemble_greedy": 0.6680857426965147
+    }
+}

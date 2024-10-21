@@ -1,0 +1,16 @@
+{
+    "run_date": "2024-10-21 02:39:32",
+    "automl": "NoneType",
+    "models": [
+        "KNeighborsClassifier()",
+        "LogisticRegression()",
+        "DecisionTreeClassifier()",
+        "LinearDiscriminantAnalysis()",
+        "QuadraticDiscriminantAnalysis()",
+        "GaussianNB()"
+    ],
+    "routing_model": "KNeighborsClassifier()",
+    "estimators_generator": "<class 'testing.test_hellsemble.estimator_generator.PredefinedEstimatorsGenerator'>",
+    "metric": "accuracy_score",
+    "experiment_type": "full"
+}

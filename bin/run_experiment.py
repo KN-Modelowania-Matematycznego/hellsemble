@@ -8,6 +8,15 @@ from sklearn.ensemble import (
     RandomForestClassifier,
     ExtraTreesClassifier,
 )
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.discriminant_analysis import (
+    LinearDiscriminantAnalysis,
+    QuadraticDiscriminantAnalysis,
+)
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neural_network import MLPClassifier
+from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score
 from testing.autogluon_config import AutoGluonRun
 from testing.autosklearn_config import AutoSklearnRun
@@ -42,16 +51,20 @@ def main(
 
 if __name__ == "__main__":
     # Define the directories containing the training and test data.
-    train_dir = "resources/data/openml/train"
-    test_dir = "resources/data/openml/test"
+    train_dir = "resources/data/aml_sample/train"
+    test_dir = "resources/data/aml_sample/test"
 
     # Define the directory to save the results to.
-    output_dir = "resources/data/openml/results"
+    output_dir = "resources/results/AML"
 
     # Define the base models to train and test.
     models = [
-        ExtraTreesClassifier(),
-        RandomForestClassifier(),
+        KNeighborsClassifier(),
+        LogisticRegression(),
+        DecisionTreeClassifier(),
+        LinearDiscriminantAnalysis(),
+        QuadraticDiscriminantAnalysis(),
+        GaussianNB(),
     ]
 
     # Define the routing model used in the Hellsemble ensemble.
@@ -62,7 +75,7 @@ if __name__ == "__main__":
     # Define the metric used to evaluate the models.
     metric = accuracy_score
 
-    automl = None  # set to AutoSklearnRun or AutoGluonRun to use AutoML
+    automl = AutoSklearnRun()  # set to AutoSklearnRun or AutoGluonRun to use AutoML
     experiment_type = "full"
 
     main(
