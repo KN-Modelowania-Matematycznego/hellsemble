@@ -1,4 +1,4 @@
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, Tuple
 from sklearn.base import BaseEstimator, ClassifierMixin
 import pandas as pd
 import numpy as np
@@ -99,7 +99,7 @@ class HellsembleExperiment:
 
     def _train_and_test_hellsemble(
         self, train_file: str, test_file: str, mode: str
-    ) -> Dict[str, float]:
+    ) -> Tuple[Dict[str, float]]:
         X_train, X_test, y_train, y_test = self._get_data_from_file(
             train_file, test_file
         )
@@ -115,7 +115,12 @@ class HellsembleExperiment:
         y_pred = estimator.predict(X_test)
         evaluation = self.metric(y_test, y_pred)
 
-        return {f"Hellsemble_{mode}": evaluation}
+        logger.info(f"Models selected by {mode} Hellsemble: {estimator.estimators}")
+        return {f"Hellsemble_{mode}": evaluation}, {
+            "score": evaluation,
+            "num_models": estimator.number_of_models,
+            "models": [str(model) for model in estimator.estimators],
+        }
 
     def _create_experiment_config(self):
         return {
@@ -138,6 +143,7 @@ class HellsembleExperiment:
             )
 
         results = {}
+        hellsemble_results_info = {}
 
         train_files = list(Path(self.train_dir).rglob("*.csv"))
         test_files = list(Path(self.test_dir).rglob("*.csv"))
@@ -163,23 +169,27 @@ class HellsembleExperiment:
                         f"Error running base models experiment for dataset {dataset_name}: {e}"
                     )
             if self.experiment_type in ["full", "hellsemble"]:
-                # TODO: Change 'sequential' and 'greedy' modes to not be hardcoded strings, but to iterate over all possible modes.
-
                 results[dataset_name]["hellsemble"] = {}
-
+                hellsemble_results_info[dataset_name] = {"greedy": {}, "sequential": {}}
                 try:
-                    results[dataset_name]["hellsemble"].update(
-                        self._train_and_test_hellsemble(
-                            train_file, test_file, "sequential"
-                        )
+                    run_results = self._train_and_test_hellsemble(
+                        train_file, test_file, "sequential"
+                    )
+                    results[dataset_name]["hellsemble"].update(run_results[0])
+                    hellsemble_results_info[dataset_name]["sequential"].update(
+                        run_results[1]
                     )
                 except Exception as e:
                     logger.error(
                         f"Error running sequential Hellsemble experiment for dataset {dataset_name}: {e}"
                     )
                 try:
-                    results[dataset_name]["hellsemble"].update(
-                        self._train_and_test_hellsemble(train_file, test_file, "greedy")
+                    run_results = self._train_and_test_hellsemble(
+                        train_file, test_file, "greedy"
+                    )
+                    results[dataset_name]["hellsemble"].update(run_results[0])
+                    hellsemble_results_info[dataset_name]["greedy"].update(
+                        run_results[1]
                     )
                 except Exception as e:
                     logger.error(
@@ -200,6 +210,10 @@ class HellsembleExperiment:
 
         with open(f"{self.output_dir}/experiment_results.json", "w") as json_file:
             json.dump(results, json_file)
+        with open(
+            f"{self.output_dir}/experiment_hellsemble_info.json", "w"
+        ) as json_file:
+            json.dump(hellsemble_results_info, json_file)
 
         with open(f"{self.output_dir}/experiment_config.json", "w") as json_file:
             json.dump(self._create_experiment_config(), json_file)

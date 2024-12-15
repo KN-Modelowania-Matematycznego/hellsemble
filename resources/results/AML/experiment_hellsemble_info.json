@@ -1,0 +1,591 @@
+{
+    "spambase": {
+        "greedy": {
+            "score": 0.9087749782797567,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9070373588184187,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "credit-approval": {
+        "greedy": {
+            "score": 0.7803468208092486,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.8034682080924855,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "dresses-sales": {
+        "greedy": {
+            "score": 0.528,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.512,
+            "num_models": 3,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()",
+                "DecisionTreeClassifier()"
+            ]
+        }
+    },
+    "numerai28.6": {
+        "greedy": {
+            "score": 0.5026578073089701,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.5073504983388705,
+            "num_models": 3,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()",
+                "DecisionTreeClassifier()"
+            ]
+        }
+    },
+    "pc3": {
+        "greedy": {
+            "score": 0.8849104859335039,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.8772378516624041,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "PhishingWebsites": {
+        "greedy": {
+            "score": 0.9602026049204052,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9504341534008683,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "pc1": {
+        "greedy": {
+            "score": 0.8920863309352518,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.935251798561151,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "bank-marketing": {
+        "greedy": {
+            "score": 0.8760506060337964,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.8987879324073255,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "kc1": {
+        "greedy": {
+            "score": 0.8181818181818182,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.8390151515151515,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "kc2": {
+        "greedy": {
+            "score": 0.7862595419847328,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.8091603053435115,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "banknote-authentication": {
+        "greedy": {
+            "score": 0.9766763848396501,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9941690962099126,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "ilpd": {
+        "greedy": {
+            "score": 0.6575342465753424,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.6712328767123288,
+            "num_models": 3,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()",
+                "DecisionTreeClassifier()"
+            ]
+        }
+    },
+    "adult": {
+        "greedy": {
+            "score": 0.8154123331422488,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.825403324871018,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "Internet-Advertisements": {
+        "greedy": {
+            "score": 0.9682926829268292,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9621951219512195,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "pc4": {
+        "greedy": {
+            "score": 0.8849315068493151,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.8931506849315068,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "credit-g": {
+        "greedy": {
+            "score": 0.708,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.752,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "Bioresponse": {
+        "greedy": {
+            "score": 0.7313432835820896,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.7526652452025586,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "blood-transfusion-service-center": {
+        "greedy": {
+            "score": 0.5828877005347594,
+            "num_models": 2,
+            "models": [
+                "DecisionTreeClassifier()",
+                "LogisticRegression()"
+            ]
+        },
+        "sequential": {
+            "score": 0.7593582887700535,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "wilt": {
+        "greedy": {
+            "score": 0.9793388429752066,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9628099173553719,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "madelon": {
+        "greedy": {
+            "score": 0.4815384615384615,
+            "num_models": 1,
+            "models": [
+                "QuadraticDiscriminantAnalysis()"
+            ]
+        },
+        "sequential": {
+            "score": 0.5353846153846153,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "ozone-level-8hr": {
+        "greedy": {
+            "score": 0.916403785488959,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9479495268138801,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "jm1": {
+        "greedy": {
+            "score": 0.7443056576047025,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.7913299044819986,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "phoneme": {
+        "greedy": {
+            "score": 0.8689859363434493,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.8660251665433013,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "diabetes": {
+        "greedy": {
+            "score": 0.6770833333333334,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.7395833333333334,
+            "num_models": 3,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()",
+                "DecisionTreeClassifier()"
+            ]
+        }
+    },
+    "tic-tac-toe": {
+        "greedy": {
+            "score": 0.9458333333333333,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 1.0,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "kr-vs-kp": {
+        "greedy": {
+            "score": 0.9949937421777222,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9499374217772215,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "sick": {
+        "greedy": {
+            "score": 0.9830328738069989,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9650053022269353,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "nomao": {
+        "greedy": {
+            "score": 0.944412208425206,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9497504932110944,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "climate-model-simulation-crashes": {
+        "greedy": {
+            "score": 0.9111111111111111,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9333333333333333,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "wdbc": {
+        "greedy": {
+            "score": 0.958041958041958,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9790209790209791,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "electricity": {
+        "greedy": {
+            "score": 0.8820621468926554,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.8315677966101694,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "breast-w": {
+        "greedy": {
+            "score": 0.9428571428571428,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.9657142857142857,
+            "num_models": 1,
+            "models": [
+                "KNeighborsClassifier()"
+            ]
+        }
+    },
+    "qsar-biodeg": {
+        "greedy": {
+            "score": 0.8257575757575758,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.8712121212121212,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "churn": {
+        "greedy": {
+            "score": 0.9104,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.8824,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    },
+    "cylinder-bands": {
+        "greedy": {
+            "score": 0.7407407407407407,
+            "num_models": 1,
+            "models": [
+                "DecisionTreeClassifier()"
+            ]
+        },
+        "sequential": {
+            "score": 0.7185185185185186,
+            "num_models": 2,
+            "models": [
+                "KNeighborsClassifier()",
+                "LogisticRegression()"
+            ]
+        }
+    }
+}

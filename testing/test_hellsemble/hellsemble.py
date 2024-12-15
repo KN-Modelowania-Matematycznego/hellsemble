@@ -360,3 +360,7 @@ class Hellsemble(BaseEstimator):
 
         y_pred = self.predict(X)
         return metrics_map[self.metric](y, y_pred)
+
+    @property
+    def number_of_models(self) -> int:
+        return len(self.estimators)
