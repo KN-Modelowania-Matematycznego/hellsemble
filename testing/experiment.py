@@ -112,14 +112,22 @@ class HellsembleExperiment:
         )
 
         estimator.fit(X_train, y_train)
-        y_pred = estimator.predict(X_test)
-        evaluation = self.metric(y_test, y_pred)
+        eval = estimator.evaluate_hellsemble(X_test, y_test)
+        hellsemble_estimators = estimator.estimators
+        eval_scores = estimator.get_progressive_scores(X_test, y_test)
 
-        logger.info(f"Models selected by {mode} Hellsemble: {estimator.estimators}")
-        return {f"Hellsemble_{mode}": evaluation}, {
-            "score": evaluation,
-            "num_models": estimator.number_of_models,
-            "models": [str(model) for model in estimator.estimators],
+        logger.info(f"Models selected by {mode} Hellsemble: {hellsemble_estimators}")
+        return {f"Hellsemble_{mode}": eval}, {
+            "score": eval,
+            "num_models": len(hellsemble_estimators),
+            "progressive_scores": eval_scores,
+            "models": {
+                str(model): {
+                    "coverage_perc": estimator.coverage_counts[i] / len(X_train),
+                    "performance_score": estimator.performance_scores[i],
+                }
+                for i, model in enumerate(hellsemble_estimators)
+            },
         }
 
     def _create_experiment_config(self):
