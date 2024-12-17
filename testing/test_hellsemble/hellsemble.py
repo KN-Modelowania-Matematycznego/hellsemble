@@ -408,3 +408,45 @@ class Hellsemble(BaseEstimator):
                 y_pred = self.predict(X)
                 scores.append(metrics_map[self.metric](y, y_pred))
         return scores
+
+    def evaluate_routing_model(
+        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
+    ) -> float:
+        """
+        Evaluates the performance of the routing model by comparing
+        the routing model's assignments with the actual performance
+        of the estimators on the routed data points.
+
+        Args:
+            X (pd.DataFrame | np.ndarray): Feature matrix.
+            y (np.ndarray | pd.Series): Target vector
+
+        Returns:
+            float: Accuracy of the routing model.
+        """
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+
+        if len(self.estimators) == 1:
+            return 1.0
+
+        routing_predictions = self.routing_model.predict(X)
+
+        correct_routing = []
+
+        for idx in range(X.shape[0]):
+            best_estimator_index = None
+            best_score = -np.inf
+
+            for i, estimator in enumerate(self.estimators):
+                y_pred = estimator.predict(X[idx].reshape(1, -1))
+                score = (y_pred == y[idx]).astype(int).item()
+
+                if score > best_score:
+                    best_score = score
+                    best_estimator_index = i
+
+            correct_routing.append(routing_predictions[idx] == best_estimator_index)
+
+        routing_accuracy = np.mean(correct_routing)
+        return routing_accuracy

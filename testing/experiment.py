@@ -114,6 +114,7 @@ class HellsembleExperiment:
         estimator.fit(X_train, y_train)
         eval = estimator.evaluate_hellsemble(X_test, y_test)
         hellsemble_estimators = estimator.estimators
+        routing_accuracy = estimator.evaluate_routing_model(X_test, y_test)
         eval_scores = estimator.get_progressive_scores(X_test, y_test)
 
         logger.info(f"Models selected by {mode} Hellsemble: {hellsemble_estimators}")
@@ -121,6 +122,7 @@ class HellsembleExperiment:
             "score": eval,
             "num_models": len(hellsemble_estimators),
             "progressive_scores": eval_scores,
+            "routing_accuracy": routing_accuracy,
             "models": {
                 str(model): {
                     "coverage_perc": estimator.coverage_counts[i] / len(X_train),

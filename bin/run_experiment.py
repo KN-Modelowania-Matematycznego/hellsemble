@@ -55,7 +55,7 @@ if __name__ == "__main__":
     test_dir = "resources/data/openml/test"
 
     # Define the directory to save the results to.
-    output_dir = "resources/results/AML"
+    output_dir = "resources/results/example"
 
     # Define the base models to train and test.
     models = [
