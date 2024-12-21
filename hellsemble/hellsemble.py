@@ -159,7 +159,7 @@ class Hellsemble(BaseEstimator):
         return prediction
 
     def __fit_estimators_sequential(
-        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
+        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series, test_size = 0.25, threshold = 0.95
     ) -> Tuple[list[ClassifierMixin], list[np.ndarray]]:
         """
         Fits a sequence of estimators and tracks their performance.
@@ -176,10 +176,11 @@ class Hellsemble(BaseEstimator):
                 list of fitted estimators and the list of masks indicating
                 which observations were used during fit of the estimators.
         """
-        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size = 0.25)
+        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size = test_size, random_state = 123)
 
         fitting_history: list[np.ndarray] = []
         output_estimators = []
+        self.meta = []
         failed_observations_idx = np.arange(X_train.shape[0])
         X_fit, y_fit = X_train, y_train
         while (
@@ -216,14 +217,14 @@ class Hellsemble(BaseEstimator):
 
             # Validate the ensemble
             val_score = self.evaluate_hellsemble(X_val, y_val)
-            print(f'Validation score for sequential emsemble: {val_score}')
-            if val_score >= 0.95:
+            self.meta.append(val_score)
+            if val_score >= threshold:
                 break
 
         return output_estimators, fitting_history
 
     def __fit_estimators_greedy(
-        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
+        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series, test_size = 0.25, threshold = 0.95
     ) -> None:
         """
         Fits a sequence of estimators and tracks their performance.
@@ -240,10 +241,11 @@ class Hellsemble(BaseEstimator):
             list[np.ndarray]: list of masks indicating
                 which observations were used during fit of the estimators
         """
-        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size = 0.25)
+        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size = test_size, random_state = 123)
 
         fitting_history: list[np.ndarray] = []
         self.estimators = []
+        self.meta = []
         failed_observations_idx = np.arange(X_train.shape[0])
         X_fit, y_fit = X_train, y_train
 
@@ -288,6 +290,7 @@ class Hellsemble(BaseEstimator):
             if best_model is not None and best_ensemble_score >= best_score:
                 self.estimators.append(best_model)
                 best_score = best_ensemble_score
+                self.meta.append(best_score)
                 predictions = self.prediction_generator.make_prediction_train(
                     best_model, X_fit
                 )
@@ -304,9 +307,9 @@ class Hellsemble(BaseEstimator):
                     y_fit[failed_observations_mask],
                 )
 
-                print(f'Validation score for greedy ensemble: {best_score}')
-
                 if len(failed_observations_idx) == 0:
+                    break
+                if best_score >= threshold:
                     break
             else:
                 break
