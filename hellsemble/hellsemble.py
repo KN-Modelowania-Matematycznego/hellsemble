@@ -66,7 +66,12 @@ class Hellsemble(BaseEstimator):
         self.metric = metric
 
     def fit(
-        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
+        self,
+        X: np.ndarray | pd.DataFrame,
+        y: np.ndarray | pd.Series,
+        validation_size: float = 0.25,
+        stopping_threshold: float = 0.95,
+        seed: int | None = None,
     ) -> Hellsemble:
         """
         Fits the Hellsemble model to the provided data according
@@ -89,10 +94,14 @@ class Hellsemble(BaseEstimator):
         if isinstance(X, pd.DataFrame):
             X = X.values
         if self.mode == "greedy":
-            self.__fitting_history = self.__fit_estimators_greedy(X, y)
+            self.__fitting_history = self.__fit_estimators_greedy(
+                X, y, validation_size, stopping_threshold, seed
+            )
         else:
             self.estimators, self.__fitting_history = (
-                self.__fit_estimators_sequential(X, y)
+                self.__fit_estimators_sequential(
+                    X, y, validation_size, stopping_threshold, seed
+                )
             )
         if len(self.estimators) > 1:
             self.routing_model = self.__fit_routing_model(
@@ -159,7 +168,12 @@ class Hellsemble(BaseEstimator):
         return prediction
 
     def __fit_estimators_sequential(
-        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series, test_size = 0.25, threshold = 0.95
+        self,
+        X: np.ndarray | pd.DataFrame,
+        y: np.ndarray | pd.Series,
+        test_size: float,
+        threshold: float,
+        seed: int | None,
     ) -> Tuple[list[ClassifierMixin], list[np.ndarray]]:
         """
         Fits a sequence of estimators and tracks their performance.
@@ -176,7 +190,9 @@ class Hellsemble(BaseEstimator):
                 list of fitted estimators and the list of masks indicating
                 which observations were used during fit of the estimators.
         """
-        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size = test_size, random_state = 123)
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y, test_size=test_size, random_state=seed
+        )
 
         fitting_history: list[np.ndarray] = []
         output_estimators = []
@@ -224,8 +240,13 @@ class Hellsemble(BaseEstimator):
         return output_estimators, fitting_history
 
     def __fit_estimators_greedy(
-        self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series, test_size = 0.25, threshold = 0.95
-    ) -> None:
+        self,
+        X: np.ndarray | pd.DataFrame,
+        y: np.ndarray | pd.Series,
+        test_size: float,
+        threshold: float,
+        seed: int | None,
+    ) -> list[np.ndarray]:
         """
         Fits a sequence of estimators and tracks their performance.
         It uses the logic of fitting subsequent classifiers on observations
@@ -241,7 +262,9 @@ class Hellsemble(BaseEstimator):
             list[np.ndarray]: list of masks indicating
                 which observations were used during fit of the estimators
         """
-        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size = test_size, random_state = 123)
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y, test_size=test_size, random_state=seed
+        )
 
         fitting_history: list[np.ndarray] = []
         self.estimators = []
