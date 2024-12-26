@@ -418,14 +418,14 @@ class Hellsemble(BaseEstimator):
 
         for idx in range(X.shape[0]):
             best_estimator_index = None
-            best_score = -np.inf
+            min_error = np.inf
 
             for i, estimator in enumerate(self.estimators):
                 y_pred = estimator.predict(X[idx].reshape(1, -1))
-                score = (y_pred == y[idx]).astype(int).item()
+                error = np.abs(y[idx] - y_pred).item()
 
-                if score > best_score:
-                    best_score = score
+                if error < min_error:
+                    min_error = error
                     best_estimator_index = i
             correct_routing.append(routing_predictions[idx] == best_estimator_index)
 
