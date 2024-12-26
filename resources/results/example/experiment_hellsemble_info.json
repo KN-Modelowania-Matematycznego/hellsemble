@@ -1,11 +1,9 @@
 {
     "spambase": {
         "greedy": {
-            "score": 0.9087749782797567,
+            "score": 0.9105125977410947,
             "num_models": 1,
-            "progressive_scores": [
-                0.9087749782797567
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -17,10 +15,7 @@
         "sequential": {
             "score": 0.9070373588184187,
             "num_models": 2,
-            "progressive_scores": [
-                0.9087749782797567,
-                0.9070373588184187
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.9348392701998263,
             "models": {
                 "KNeighborsClassifier()": {
@@ -36,11 +31,9 @@
     },
     "credit-approval": {
         "greedy": {
-            "score": 0.7976878612716763,
+            "score": 0.7803468208092486,
             "num_models": 1,
-            "progressive_scores": [
-                0.7976878612716763
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -52,10 +45,7 @@
         "sequential": {
             "score": 0.8034682080924855,
             "num_models": 2,
-            "progressive_scores": [
-                0.7976878612716763,
-                0.8034682080924855
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.8265895953757225,
             "models": {
                 "KNeighborsClassifier()": {
@@ -71,11 +61,9 @@
     },
     "dresses-sales": {
         "greedy": {
-            "score": 0.536,
+            "score": 0.568,
             "num_models": 1,
-            "progressive_scores": [
-                0.536
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -87,12 +75,8 @@
         "sequential": {
             "score": 0.512,
             "num_models": 3,
-            "progressive_scores": [
-                0.536,
-                0.512,
-                0.512
-            ],
-            "routing_accuracy": 0.52,
+            "progressive_scores": [],
+            "routing_accuracy": 0.512,
             "models": {
                 "KNeighborsClassifier()": {
                     "coverage_perc": 0.6773333333333333,
@@ -111,11 +95,9 @@
     },
     "numerai28.6": {
         "greedy": {
-            "score": 0.5007059800664452,
+            "score": 0.5026993355481728,
             "num_models": 1,
-            "progressive_scores": [
-                0.5007059800664452
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -125,14 +107,10 @@
             }
         },
         "sequential": {
-            "score": 0.5073504983388705,
+            "score": 0.5073920265780731,
             "num_models": 3,
-            "progressive_scores": [
-                0.5074335548172757,
-                0.507641196013289,
-                0.5073504983388705
-            ],
-            "routing_accuracy": 0.5080564784053156,
+            "progressive_scores": [],
+            "routing_accuracy": 0.5081810631229235,
             "models": {
                 "KNeighborsClassifier()": {
                     "coverage_perc": 0.6908084163898117,
@@ -153,9 +131,7 @@
         "greedy": {
             "score": 0.8567774936061381,
             "num_models": 1,
-            "progressive_scores": [
-                0.8567774936061381
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -167,10 +143,7 @@
         "sequential": {
             "score": 0.8772378516624041,
             "num_models": 2,
-            "progressive_scores": [
-                0.8797953964194374,
-                0.8772378516624041
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.8925831202046036,
             "models": {
                 "KNeighborsClassifier()": {
@@ -186,11 +159,9 @@
     },
     "PhishingWebsites": {
         "greedy": {
-            "score": 0.9583936324167872,
+            "score": 0.9591172214182344,
             "num_models": 1,
-            "progressive_scores": [
-                0.9583936324167872
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -202,9 +173,7 @@
         "sequential": {
             "score": 0.9504341534008683,
             "num_models": 1,
-            "progressive_scores": [
-                0.9504341534008683
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -216,11 +185,9 @@
     },
     "pc1": {
         "greedy": {
-            "score": 0.8992805755395683,
+            "score": 0.8920863309352518,
             "num_models": 1,
-            "progressive_scores": [
-                0.8992805755395683
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -232,10 +199,7 @@
         "sequential": {
             "score": 0.935251798561151,
             "num_models": 2,
-            "progressive_scores": [
-                0.9388489208633094,
-                0.935251798561151
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.9460431654676259,
             "models": {
                 "KNeighborsClassifier()": {
@@ -251,11 +215,9 @@
     },
     "bank-marketing": {
         "greedy": {
-            "score": 0.876316022294966,
+            "score": 0.8773776873396444,
             "num_models": 1,
-            "progressive_scores": [
-                0.876316022294966
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -267,10 +229,7 @@
         "sequential": {
             "score": 0.8987879324073255,
             "num_models": 2,
-            "progressive_scores": [
-                0.8993187649296647,
-                0.8987879324073255
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.9149783243386711,
             "models": {
                 "KNeighborsClassifier()": {
@@ -286,11 +245,9 @@
     },
     "kc1": {
         "greedy": {
-            "score": 0.8200757575757576,
+            "score": 0.821969696969697,
             "num_models": 1,
-            "progressive_scores": [
-                0.8200757575757576
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -302,10 +259,7 @@
         "sequential": {
             "score": 0.8390151515151515,
             "num_models": 2,
-            "progressive_scores": [
-                0.8446969696969697,
-                0.8390151515151515
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.8636363636363636,
             "models": {
                 "KNeighborsClassifier()": {
@@ -321,11 +275,9 @@
     },
     "kc2": {
         "greedy": {
-            "score": 0.7938931297709924,
+            "score": 0.7862595419847328,
             "num_models": 1,
-            "progressive_scores": [
-                0.7938931297709924
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -337,10 +289,7 @@
         "sequential": {
             "score": 0.8091603053435115,
             "num_models": 2,
-            "progressive_scores": [
-                0.7938931297709924,
-                0.8091603053435115
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.8625954198473282,
             "models": {
                 "KNeighborsClassifier()": {
@@ -358,9 +307,7 @@
         "greedy": {
             "score": 0.9766763848396501,
             "num_models": 1,
-            "progressive_scores": [
-                0.9766763848396501
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -372,9 +319,7 @@
         "sequential": {
             "score": 0.9941690962099126,
             "num_models": 1,
-            "progressive_scores": [
-                0.9941690962099126
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -386,11 +331,9 @@
     },
     "ilpd": {
         "greedy": {
-            "score": 0.6506849315068494,
+            "score": 0.636986301369863,
             "num_models": 1,
-            "progressive_scores": [
-                0.6506849315068494
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -402,11 +345,7 @@
         "sequential": {
             "score": 0.6712328767123288,
             "num_models": 3,
-            "progressive_scores": [
-                0.6575342465753424,
-                0.6712328767123288,
-                0.6712328767123288
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.678082191780822,
             "models": {
                 "KNeighborsClassifier()": {
@@ -426,11 +365,9 @@
     },
     "adult": {
         "greedy": {
-            "score": 0.8144296126443371,
+            "score": 0.814511506019163,
             "num_models": 1,
-            "progressive_scores": [
-                0.8144296126443371
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -442,10 +379,7 @@
         "sequential": {
             "score": 0.825403324871018,
             "num_models": 2,
-            "progressive_scores": [
-                0.8303169273605765,
-                0.825403324871018
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.860289902546884,
             "models": {
                 "KNeighborsClassifier()": {
@@ -461,11 +395,9 @@
     },
     "Internet-Advertisements": {
         "greedy": {
-            "score": 0.9658536585365853,
+            "score": 0.9634146341463414,
             "num_models": 1,
-            "progressive_scores": [
-                0.9658536585365853
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -477,9 +409,7 @@
         "sequential": {
             "score": 0.9621951219512195,
             "num_models": 1,
-            "progressive_scores": [
-                0.9621951219512195
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -491,11 +421,9 @@
     },
     "pc4": {
         "greedy": {
-            "score": 0.8849315068493151,
+            "score": 0.8767123287671232,
             "num_models": 1,
-            "progressive_scores": [
-                0.8849315068493151
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -507,10 +435,7 @@
         "sequential": {
             "score": 0.8931506849315068,
             "num_models": 2,
-            "progressive_scores": [
-                0.9013698630136986,
-                0.8931506849315068
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.915068493150685,
             "models": {
                 "KNeighborsClassifier()": {
@@ -526,11 +451,9 @@
     },
     "credit-g": {
         "greedy": {
-            "score": 0.716,
+            "score": 0.724,
             "num_models": 1,
-            "progressive_scores": [
-                0.716
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -542,10 +465,7 @@
         "sequential": {
             "score": 0.752,
             "num_models": 2,
-            "progressive_scores": [
-                0.748,
-                0.752
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.796,
             "models": {
                 "KNeighborsClassifier()": {
@@ -561,11 +481,9 @@
     },
     "Bioresponse": {
         "greedy": {
-            "score": 0.6993603411513859,
+            "score": 0.7217484008528785,
             "num_models": 1,
-            "progressive_scores": [
-                0.6993603411513859
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -577,10 +495,7 @@
         "sequential": {
             "score": 0.7526652452025586,
             "num_models": 2,
-            "progressive_scores": [
-                0.7484008528784648,
-                0.7526652452025586
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.8230277185501066,
             "models": {
                 "KNeighborsClassifier()": {
@@ -598,10 +513,7 @@
         "greedy": {
             "score": 0.5828877005347594,
             "num_models": 2,
-            "progressive_scores": [
-                0.5828877005347594,
-                0.5828877005347594
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.9732620320855615,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -617,10 +529,7 @@
         "sequential": {
             "score": 0.7593582887700535,
             "num_models": 2,
-            "progressive_scores": [
-                0.7647058823529411,
-                0.7593582887700535
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.8181818181818182,
             "models": {
                 "KNeighborsClassifier()": {
@@ -636,11 +545,9 @@
     },
     "wilt": {
         "greedy": {
-            "score": 0.9768595041322314,
+            "score": 0.9785123966942149,
             "num_models": 1,
-            "progressive_scores": [
-                0.9768595041322314
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -652,9 +559,7 @@
         "sequential": {
             "score": 0.9628099173553719,
             "num_models": 1,
-            "progressive_scores": [
-                0.9628099173553719
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -668,9 +573,7 @@
         "greedy": {
             "score": 0.4815384615384615,
             "num_models": 1,
-            "progressive_scores": [
-                0.4815384615384615
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "QuadraticDiscriminantAnalysis()": {
@@ -682,10 +585,7 @@
         "sequential": {
             "score": 0.5353846153846153,
             "num_models": 2,
-            "progressive_scores": [
-                0.5430769230769231,
-                0.5353846153846153
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.6276923076923077,
             "models": {
                 "KNeighborsClassifier()": {
@@ -701,11 +601,9 @@
     },
     "ozone-level-8hr": {
         "greedy": {
-            "score": 0.9148264984227129,
+            "score": 0.9211356466876972,
             "num_models": 1,
-            "progressive_scores": [
-                0.9148264984227129
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -717,9 +615,7 @@
         "sequential": {
             "score": 0.9479495268138801,
             "num_models": 1,
-            "progressive_scores": [
-                0.9479495268138801
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -731,11 +627,9 @@
     },
     "jm1": {
         "greedy": {
-            "score": 0.7443056576047025,
+            "score": 0.7402645113886848,
             "num_models": 1,
-            "progressive_scores": [
-                0.7443056576047025
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -747,10 +641,7 @@
         "sequential": {
             "score": 0.7913299044819986,
             "num_models": 2,
-            "progressive_scores": [
-                0.7983100661278472,
-                0.7913299044819986
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.8218221895664952,
             "models": {
                 "KNeighborsClassifier()": {
@@ -766,11 +657,9 @@
     },
     "phoneme": {
         "greedy": {
-            "score": 0.8638045891931903,
+            "score": 0.8660251665433013,
             "num_models": 1,
-            "progressive_scores": [
-                0.8638045891931903
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -782,10 +671,7 @@
         "sequential": {
             "score": 0.8660251665433013,
             "num_models": 2,
-            "progressive_scores": [
-                0.8638045891931903,
-                0.8660251665433013
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.9178386380458919,
             "models": {
                 "KNeighborsClassifier()": {
@@ -801,11 +687,9 @@
     },
     "diabetes": {
         "greedy": {
-            "score": 0.6666666666666666,
+            "score": 0.65625,
             "num_models": 1,
-            "progressive_scores": [
-                0.6666666666666666
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -817,11 +701,7 @@
         "sequential": {
             "score": 0.7395833333333334,
             "num_models": 3,
-            "progressive_scores": [
-                0.7447916666666666,
-                0.7395833333333334,
-                0.7395833333333334
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.765625,
             "models": {
                 "KNeighborsClassifier()": {
@@ -841,11 +721,9 @@
     },
     "tic-tac-toe": {
         "greedy": {
-            "score": 0.9458333333333333,
+            "score": 0.9291666666666667,
             "num_models": 1,
-            "progressive_scores": [
-                0.9458333333333333
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -857,9 +735,7 @@
         "sequential": {
             "score": 1.0,
             "num_models": 1,
-            "progressive_scores": [
-                1.0
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -871,11 +747,9 @@
     },
     "kr-vs-kp": {
         "greedy": {
-            "score": 0.9949937421777222,
+            "score": 0.9924906132665833,
             "num_models": 1,
-            "progressive_scores": [
-                0.9949937421777222
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -887,9 +761,7 @@
         "sequential": {
             "score": 0.9499374217772215,
             "num_models": 1,
-            "progressive_scores": [
-                0.9499374217772215
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -901,11 +773,9 @@
     },
     "sick": {
         "greedy": {
-            "score": 0.9862142099681867,
+            "score": 0.985153764581124,
             "num_models": 1,
-            "progressive_scores": [
-                0.9862142099681867
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -917,9 +787,7 @@
         "sequential": {
             "score": 0.9650053022269353,
             "num_models": 1,
-            "progressive_scores": [
-                0.9650053022269353
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -931,11 +799,9 @@
     },
     "nomao": {
         "greedy": {
-            "score": 0.9449924567714982,
+            "score": 0.9448764071022397,
             "num_models": 1,
-            "progressive_scores": [
-                0.9449924567714982
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -947,9 +813,7 @@
         "sequential": {
             "score": 0.9497504932110944,
             "num_models": 1,
-            "progressive_scores": [
-                0.9497504932110944
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -961,11 +825,9 @@
     },
     "climate-model-simulation-crashes": {
         "greedy": {
-            "score": 0.9037037037037037,
+            "score": 0.8888888888888888,
             "num_models": 1,
-            "progressive_scores": [
-                0.9037037037037037
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -977,10 +839,7 @@
         "sequential": {
             "score": 0.9333333333333333,
             "num_models": 2,
-            "progressive_scores": [
-                0.9333333333333333,
-                0.9333333333333333
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.9259259259259259,
             "models": {
                 "KNeighborsClassifier()": {
@@ -996,11 +855,9 @@
     },
     "wdbc": {
         "greedy": {
-            "score": 0.9440559440559441,
+            "score": 0.9370629370629371,
             "num_models": 1,
-            "progressive_scores": [
-                0.9440559440559441
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -1012,9 +869,7 @@
         "sequential": {
             "score": 0.9790209790209791,
             "num_models": 1,
-            "progressive_scores": [
-                0.9790209790209791
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -1026,11 +881,9 @@
     },
     "electricity": {
         "greedy": {
-            "score": 0.8813559322033898,
+            "score": 0.8815324858757062,
             "num_models": 1,
-            "progressive_scores": [
-                0.8813559322033898
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -1042,10 +895,7 @@
         "sequential": {
             "score": 0.8315677966101694,
             "num_models": 2,
-            "progressive_scores": [
-                0.8337747175141242,
-                0.8315677966101694
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.8838276836158192,
             "models": {
                 "KNeighborsClassifier()": {
@@ -1061,11 +911,9 @@
     },
     "breast-w": {
         "greedy": {
-            "score": 0.9428571428571428,
+            "score": 0.9542857142857143,
             "num_models": 1,
-            "progressive_scores": [
-                0.9428571428571428
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -1077,9 +925,7 @@
         "sequential": {
             "score": 0.9657142857142857,
             "num_models": 1,
-            "progressive_scores": [
-                0.9657142857142857
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "KNeighborsClassifier()": {
@@ -1091,11 +937,9 @@
     },
     "qsar-biodeg": {
         "greedy": {
-            "score": 0.8143939393939394,
+            "score": 0.803030303030303,
             "num_models": 1,
-            "progressive_scores": [
-                0.8143939393939394
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -1107,10 +951,7 @@
         "sequential": {
             "score": 0.8712121212121212,
             "num_models": 2,
-            "progressive_scores": [
-                0.8674242424242424,
-                0.8712121212121212
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.9053030303030303,
             "models": {
                 "KNeighborsClassifier()": {
@@ -1126,11 +967,9 @@
     },
     "churn": {
         "greedy": {
-            "score": 0.9152,
+            "score": 0.9136,
             "num_models": 1,
-            "progressive_scores": [
-                0.9152
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -1142,10 +981,7 @@
         "sequential": {
             "score": 0.8824,
             "num_models": 2,
-            "progressive_scores": [
-                0.8824,
-                0.8824
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.8856,
             "models": {
                 "KNeighborsClassifier()": {
@@ -1161,11 +997,9 @@
     },
     "cylinder-bands": {
         "greedy": {
-            "score": 0.7481481481481481,
+            "score": 0.7555555555555555,
             "num_models": 1,
-            "progressive_scores": [
-                0.7481481481481481
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 1.0,
             "models": {
                 "DecisionTreeClassifier()": {
@@ -1177,10 +1011,7 @@
         "sequential": {
             "score": 0.7185185185185186,
             "num_models": 2,
-            "progressive_scores": [
-                0.7185185185185186,
-                0.7185185185185186
-            ],
+            "progressive_scores": [],
             "routing_accuracy": 0.7777777777777778,
             "models": {
                 "KNeighborsClassifier()": {

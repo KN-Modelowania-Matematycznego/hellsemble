@@ -14,6 +14,7 @@ from loguru import logger
 from testing.automl_config import AutoMLRun
 from testing.eval_utils import calculate_ranks, calculate_adtm, generate_CD_plot
 from pathlib import Path
+import pprint
 
 
 class HellsembleExperiment:
@@ -112,14 +113,14 @@ class HellsembleExperiment:
         )
 
         estimator.fit(X_train, y_train)
-        eval = estimator.evaluate_hellsemble(X_test, y_test)
+        evaluation = estimator.evaluate_hellsemble(X_test, y_test)
         hellsemble_estimators = estimator.estimators
         routing_accuracy = estimator.evaluate_routing_model(X_test, y_test)
         eval_scores = estimator.get_progressive_scores(X_test, y_test)
 
         logger.info(f"Models selected by {mode} Hellsemble: {hellsemble_estimators}")
-        return {f"Hellsemble_{mode}": eval}, {
-            "score": eval,
+        return {f"Hellsemble_{mode}": evaluation}, {
+            "score": evaluation,
             "num_models": len(hellsemble_estimators),
             "progressive_scores": eval_scores,
             "routing_accuracy": routing_accuracy,
@@ -223,7 +224,9 @@ class HellsembleExperiment:
         with open(
             f"{self.output_dir}/experiment_hellsemble_info.json", "w"
         ) as json_file:
-            json.dump(hellsemble_results_info, json_file)
+            json.dump(hellsemble_results_info, json_file, indent=4)
+            logger.info("Hellsemble Results Info:")
+            pprint.pp(hellsemble_results_info)
 
         with open(f"{self.output_dir}/experiment_config.json", "w") as json_file:
             json.dump(self._create_experiment_config(), json_file)

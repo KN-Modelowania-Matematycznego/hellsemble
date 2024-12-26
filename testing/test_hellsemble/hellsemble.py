@@ -53,15 +53,15 @@ class Hellsemble(BaseEstimator):
         prediction_generator: PredictionGenerator,
         routing_model: ClassifierMixin,
         mode: Literal["greedy", "sequential"] = "greedy",
-        metric: Union[
-            Callable, Literal["accuracy", "balanced_accuracy", "roc_auc", "f1"]
-        ] = accuracy_score,
+        metric: Callable = accuracy_score,
+        is_pred_proba: bool = False,
     ):
         self.estimator_generator = estimator_generator
         self.routing_model = routing_model
         self.prediction_generator = prediction_generator
         self.mode = mode
         self.metric = metric
+        self.is_pred_proba = is_pred_proba
 
     def fit(
         self, X: Union[np.ndarray, pd.DataFrame], y: Union[np.ndarray, pd.Series]
@@ -87,11 +87,16 @@ class Hellsemble(BaseEstimator):
         if isinstance(X, pd.DataFrame):
             X = X.values
         if self.mode == "greedy":
-            self.__fitting_history = self.__fit_estimators_greedy(X, y)
-        else:
-            self.estimators, self.__fitting_history = self.__fit_estimators_sequential(
-                X, y
+            self.__fitting_history, self.coverage_counts, self.performance_scores = (
+                self.__fit_estimators_greedy(X, y)
             )
+        else:
+            (
+                self.estimators,
+                self.__fitting_history,
+                self.coverage_counts,
+                self.performance_scores,
+            ) = self.__fit_estimators_sequential(X, y)
         if len(self.estimators) > 1:
             self.routing_model = self.__fit_routing_model(
                 self.routing_model, X, self.__fitting_history
@@ -174,8 +179,8 @@ class Hellsemble(BaseEstimator):
         """
         fitting_history: list[np.ndarray] = []
         output_estimators = []
-        self.coverage_counts = []
-        self.performance_scores = []
+        coverage_counts = []
+        performance_scores = []
         failed_observations_idx = np.arange(X.shape[0])
         X_fit, y_fit = X, y
         while self.estimator_generator.has_next() and not self.__fitting_stop_condition(
@@ -190,9 +195,9 @@ class Hellsemble(BaseEstimator):
                 estimator, X_fit
             )
             performance_score = self.metric(y_fit, estimator.predict(X_fit))
-            self.performance_scores.append(performance_score)
+            performance_scores.append(performance_score)
             failed_observations_mask = estimator_predictions != y_fit
-            self.coverage_counts.append(len(X_fit) - failed_observations_mask.sum())
+            coverage_counts.append(X_fit.shape[0] - failed_observations_mask.sum())
 
             # Create prediction history entry
             failed_observations_idx = failed_observations_idx[failed_observations_mask]
@@ -205,7 +210,7 @@ class Hellsemble(BaseEstimator):
                 X_fit[failed_observations_mask],
                 y_fit[failed_observations_mask],
             )
-        return output_estimators, fitting_history
+        return output_estimators, fitting_history, coverage_counts, performance_scores
 
     def __fit_estimators_greedy(
         self, X: Union[np.ndarray, pd.DataFrame], y: Union[np.ndarray, pd.Series]
@@ -227,8 +232,8 @@ class Hellsemble(BaseEstimator):
         """
         fitting_history: list[np.ndarray] = []
         self.estimators = []
-        self.coverage_counts = []
-        self.performance_scores = []
+        coverage_counts = []
+        performance_scores = []
         failed_observations_idx = np.arange(X.shape[0])
         X_fit, y_fit = X, y
 
@@ -276,14 +281,12 @@ class Hellsemble(BaseEstimator):
                 predictions = self.prediction_generator.make_prediction_train(
                     best_model, X_fit
                 )
-                self.performance_scores.append(
-                    self.metric(y_fit, best_model.predict(X_fit))
-                )
+                performance_scores.append(self.metric(y_fit, best_model.predict(X_fit)))
                 failed_observations_mask = predictions != y_fit
                 failed_observations_idx = failed_observations_idx[
                     failed_observations_mask
                 ]
-                self.coverage_counts.append(len(X_fit) - failed_observations_mask.sum())
+                coverage_counts.append(len(X_fit) - failed_observations_mask.sum())
 
                 fitting_history_entry = np.full((X.shape[0]), False)
                 fitting_history_entry[failed_observations_idx] = True
@@ -297,7 +300,7 @@ class Hellsemble(BaseEstimator):
                     break
             else:
                 break
-        return fitting_history
+        return fitting_history, coverage_counts, performance_scores
 
     def __fitting_stop_condition(self, fitting_history: list[np.ndarray]) -> bool:
         # Place for additional stop conditions
@@ -356,23 +359,11 @@ class Hellsemble(BaseEstimator):
         Returns:
             np.float64: metric score
         """
-        metrics_map = {
-            "roc_auc": roc_auc_score,
-            "accuracy": accuracy_score,
-            "balanced_accuracy": balanced_accuracy_score,
-            "f1": f1_score,
-        }
-
-        if callable(self.metric):
+        if self.is_pred_proba:
+            y_pred = self.predict_proba(X)[:, 1]
+        else:
             y_pred = self.predict(X)
-            return self.metric(y, y_pred)
-
-        if self.metric == "roc_auc":
-            y_pred_proba = self.predict_proba(X)[:, 1]
-            return metrics_map["roc_auc"](y, y_pred_proba)
-
-        y_pred = self.predict(X)
-        return metrics_map[self.metric](y, y_pred)
+        return self.metric(y, y_pred)
 
     def get_progressive_scores(
         self, X: Union[np.ndarray, pd.DataFrame], y: Union[np.ndarray, pd.Series]
@@ -388,25 +379,16 @@ class Hellsemble(BaseEstimator):
         Returns:
             list[float]: List of metric scores for each step in the ensemble.
         """
-        metrics_map = {
-            "roc_auc": roc_auc_score,
-            "accuracy": accuracy_score,
-            "balanced_accuracy": balanced_accuracy_score,
-            "f1": f1_score,
-        }
-        estimators_copy = self.estimators.copy()
-        scores = []
-        for i in range(1, len(estimators_copy) + 1):
-            self.estimators = estimators_copy[:i]
-            if callable(self.metric):
-                y_pred = self.predict(X)
-                scores.append(self.metric(y, y_pred))
-            elif self.metric == "roc_auc":
-                y_pred_proba = self.predict_proba(X)[:, 1]
-                scores.append(metrics_map["roc_auc"](y, y_pred_proba))
-            else:
-                y_pred = self.predict(X)
-                scores.append(metrics_map[self.metric](y, y_pred))
+        try:
+            estimators_copy = self.estimators.copy.deepcopy()
+            scores = []
+            for i in range(1, len(estimators_copy) + 1):
+                self.estimators = estimators_copy[:i]
+                scores.append(self.evaluate_hellsemble(X, y))
+        except Exception as e:
+            print(f"An error occurred while calculating progressive scores: {e}")
+            scores = []
+
         return scores
 
     def evaluate_routing_model(
@@ -445,7 +427,6 @@ class Hellsemble(BaseEstimator):
                 if score > best_score:
                     best_score = score
                     best_estimator_index = i
-
             correct_routing.append(routing_predictions[idx] == best_estimator_index)
 
         routing_accuracy = np.mean(correct_routing)
