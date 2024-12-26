@@ -66,11 +66,6 @@ def generate_CD_plot(average_ranks: Dict[str, float], ranks_df: pd.DataFrame):
     average_ranks_list = list(average_ranks.values())
     model_names = list(average_ranks.keys())
 
-    # Debug prints
-    print("Average Ranks List:", average_ranks_list)
-    print("Model Names:", model_names)
-    print("Ranks DataFrame:\n", ranks_df)
-
     # Check if average_ranks_list is not empty
     if len(average_ranks_list) == 0:
         print("Error: `average_ranks_list` is empty.")
@@ -80,5 +75,6 @@ def generate_CD_plot(average_ranks: Dict[str, float], ranks_df: pd.DataFrame):
     nemenyi_results = sp.posthoc_nemenyi_friedman(ranks_df)
 
     # Generate the CD plot
+    plt.figure(figsize=(16, 12))
     sp.sign_plot(nemenyi_results, labels=model_names)
     plt.show()
