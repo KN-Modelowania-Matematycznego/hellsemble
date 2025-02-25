@@ -1,20 +1,26 @@
-from typing import Dict, List, Callable, Tuple
-from sklearn.base import BaseEstimator, ClassifierMixin
-import pandas as pd
-import numpy as np
-from datetime import datetime
 import json
 import os
-from testing.test_hellsemble.hellsemble import Hellsemble
+import pprint
+from datetime import datetime
+from pathlib import Path
+from typing import Callable, Dict, List, Tuple
+
+import numpy as np
+import pandas as pd
+from loguru import logger
+from sklearn.base import BaseEstimator, ClassifierMixin
+
+from testing.automl_config import AutoMLRun
+from testing.eval_utils import (
+    calculate_adtm,
+    calculate_ranks,
+    generate_CD_plot,
+)
 from testing.test_hellsemble.estimator_generator import EstimatorGenerator
+from testing.test_hellsemble.hellsemble import Hellsemble
 from testing.test_hellsemble.prediction_generator import (
     FixedThresholdPredictionGenerator,
 )
-from loguru import logger
-from testing.automl_config import AutoMLRun
-from testing.eval_utils import calculate_ranks, calculate_adtm, generate_CD_plot
-from pathlib import Path
-import pprint
 
 
 class HellsembleExperiment:
@@ -60,7 +66,8 @@ class HellsembleExperiment:
     ):
         self.train_dir = train_dir
         self.test_dir = test_dir
-        self.output_dir = output_dir
+        self.output_dir = Path(output_dir)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         self.models = models
         self.routing_model = routing_model
         self.metric = metric
@@ -118,7 +125,9 @@ class HellsembleExperiment:
         routing_accuracy = estimator.evaluate_routing_model(X_test, y_test)
         eval_scores = estimator.get_progressive_scores(X_test, y_test)
 
-        logger.info(f"Models selected by {mode} Hellsemble: {hellsemble_estimators}")
+        logger.info(
+            f"Models selected by {mode} Hellsemble: {hellsemble_estimators}"
+        )
         return {f"Hellsemble_{mode}": evaluation}, {
             "score": evaluation,
             "num_models": len(hellsemble_estimators),
@@ -126,7 +135,8 @@ class HellsembleExperiment:
             "routing_accuracy": routing_accuracy,
             "models": {
                 str(model): {
-                    "coverage_perc": estimator.coverage_counts[i] / len(X_train),
+                    "coverage_perc": estimator.coverage_counts[i]
+                    / len(X_train),
                     "performance_score": estimator.performance_scores[i],
                 }
                 for i, model in enumerate(hellsemble_estimators)
@@ -172,8 +182,8 @@ class HellsembleExperiment:
             logger.info(f"Running experiment for dataset: {dataset_name}")
             if self.experiment_type in ["full", "base_models"]:
                 try:
-                    results[dataset_name]["base_models"] = self._get_base_model_results(
-                        train_file, test_file
+                    results[dataset_name]["base_models"] = (
+                        self._get_base_model_results(train_file, test_file)
                     )
                 except Exception as e:
                     logger.error(
@@ -181,7 +191,10 @@ class HellsembleExperiment:
                     )
             if self.experiment_type in ["full", "hellsemble"]:
                 results[dataset_name]["hellsemble"] = {}
-                hellsemble_results_info[dataset_name] = {"greedy": {}, "sequential": {}}
+                hellsemble_results_info[dataset_name] = {
+                    "greedy": {},
+                    "sequential": {},
+                }
                 try:
                     run_results = self._train_and_test_hellsemble(
                         train_file, test_file, "sequential"
@@ -207,19 +220,21 @@ class HellsembleExperiment:
                         f"Error running greedy Hellsemble experiment for dataset {dataset_name}: {e}"
                     )
 
-        average_ranks, ranks_df = calculate_ranks(results)
+        # average_ranks, ranks_df = calculate_ranks(results)
 
-        logger.info(f"Average ranks = {average_ranks}")
-        generate_CD_plot(average_ranks, ranks_df)
+        # logger.info(f"Average ranks = {average_ranks}")
+        # generate_CD_plot(average_ranks, ranks_df)
 
         logger.info(f"Saving results to {self.output_dir}")
         result_eval = calculate_adtm(results)
         logger.info(f"ADTM score = {result_eval}")
 
-        results["average_ranks"] = average_ranks
+        # results["average_ranks"] = average_ranks
         results["ADTM"] = result_eval
 
-        with open(f"{self.output_dir}/experiment_results.json", "w") as json_file:
+        with open(
+            f"{self.output_dir}/experiment_results.json", "w"
+        ) as json_file:
             json.dump(results, json_file)
         with open(
             f"{self.output_dir}/experiment_hellsemble_info.json", "w"
@@ -228,7 +243,9 @@ class HellsembleExperiment:
             logger.info("Hellsemble Results Info:")
             pprint.pp(hellsemble_results_info)
 
-        with open(f"{self.output_dir}/experiment_config.json", "w") as json_file:
+        with open(
+            f"{self.output_dir}/experiment_config.json", "w"
+        ) as json_file:
             json.dump(self._create_experiment_config(), json_file)
 
         logger.info("Experiment complete.")
