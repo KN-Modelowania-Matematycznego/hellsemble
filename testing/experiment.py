@@ -122,7 +122,7 @@ class HellsembleExperiment:
         return {f"Hellsemble_{mode}": evaluation}, {
             "score": evaluation,
             "num_models": len(hellsemble_estimators),
-            "progressive_scores": eval_scores,
+            "progressive_validation_scores": eval_scores,
             "routing_accuracy": routing_accuracy,
             "models": {
                 str(model): {

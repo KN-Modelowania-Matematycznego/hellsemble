@@ -248,12 +248,12 @@ class Hellsemble(BaseEstimator):
         test_size: float,
         threshold: float,
         seed: int | None,
-    ) -> None:
+    ) -> Tuple[list[np.ndarray], list[int], list[float]]:
         """
         Fits a sequence of estimators and tracks their performance.
         It uses the logic of fitting subsequent classifiers on observations
         that previous models failed to predict correctly. But in each iteration
-        it dynamically verifies which model improves F! score
+        it dynamically verifies which model improves F1 score
         on the validation dataset the most and adds it to estimator list.
 
         Args:
@@ -295,14 +295,12 @@ class Hellsemble(BaseEstimator):
                 fitting_history_entry = np.full((X.shape[0]), False)
                 fitting_history_entry[failed_observations_idx_temp] = True
                 self.estimators.append(estimator)
-
                 if len(self.estimators) > 1:
                     self.routing_model = self.__fit_routing_model(
                         self.routing_model,
                         X,
                         fitting_history + [fitting_history_entry],
                     )
-                # predictions = self.predict(X)
                 current_score = self.evaluate_hellsemble(X_val, y_val)
                 self.estimators.pop()
 
@@ -310,15 +308,14 @@ class Hellsemble(BaseEstimator):
                     best_model = estimator
                     best_ensemble_score = current_score
 
-            # Best model from iteration is added to estiamtors sequence
+            # Best model from iteration is added to estimators sequence
             if best_model is not None and best_ensemble_score >= best_score:
                 self.estimators.append(best_model)
-
                 best_score = best_ensemble_score
                 predictions = self.prediction_generator.make_prediction_train(
                     best_model, X_fit
                 )
-                performance_scores.append(self.metric(y_fit, best_model.predict(X_fit)))
+                performance_scores.append(self.metric(y_val, best_model.predict(X_val)))
                 failed_observations_mask = predictions != y_fit
                 failed_observations_idx = failed_observations_idx[
                     failed_observations_mask
@@ -339,6 +336,7 @@ class Hellsemble(BaseEstimator):
                     break
             else:
                 break
+
         return fitting_history, coverage_counts, performance_scores
 
     def __fitting_stop_condition(self, fitting_history: list[np.ndarray]) -> bool:
