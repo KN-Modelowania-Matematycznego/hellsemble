@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import Callable, Literal, Tuple, Union
-
+import copy
 import numpy as np
 import pandas as pd
 from pydantic import validate_call
@@ -12,6 +12,7 @@ from sklearn.metrics import (
     f1_score,
     roc_auc_score,
 )
+from sklearn.model_selection import train_test_split
 
 from .estimator_generator import EstimatorGenerator
 from .prediction_generator import PredictionGenerator
@@ -64,7 +65,12 @@ class Hellsemble(BaseEstimator):
         self.is_pred_proba = is_pred_proba
 
     def fit(
-        self, X: Union[np.ndarray, pd.DataFrame], y: Union[np.ndarray, pd.Series]
+        self,
+        X: Union[np.ndarray, pd.DataFrame],
+        y: Union[np.ndarray, pd.Series],
+        validation_size: float = 0.25,
+        stopping_threshold: float = 0.95,
+        seed: int | None = None,
     ) -> Hellsemble:
         """
         Fits the Hellsemble model to the provided data according
@@ -88,15 +94,18 @@ class Hellsemble(BaseEstimator):
             X = X.values
         if self.mode == "greedy":
             self.__fitting_history, self.coverage_counts, self.performance_scores = (
-                self.__fit_estimators_greedy(X, y)
+                self.__fit_estimators_greedy(
+                    X, y, validation_size, stopping_threshold, seed
+                )
             )
         else:
             (
-                self.estimators,
                 self.__fitting_history,
                 self.coverage_counts,
                 self.performance_scores,
-            ) = self.__fit_estimators_sequential(X, y)
+            ) = self.__fit_estimators_sequential(
+                X, y, validation_size, stopping_threshold, seed
+            )
         if len(self.estimators) > 1:
             self.routing_model = self.__fit_routing_model(
                 self.routing_model, X, self.__fitting_history
@@ -160,7 +169,12 @@ class Hellsemble(BaseEstimator):
         return prediction
 
     def __fit_estimators_sequential(
-        self, X: Union[np.ndarray, pd.DataFrame], y: Union[np.ndarray, pd.Series]
+        self,
+        X: Union[np.ndarray, pd.DataFrame],
+        y: Union[np.ndarray, pd.Series],
+        test_size: float,
+        threshold: float,
+        seed: int | None,
     ) -> Tuple[list[ClassifierMixin], list[np.ndarray]]:
         """
         Fits a sequence of estimators and tracks their performance.
@@ -177,25 +191,27 @@ class Hellsemble(BaseEstimator):
                 list of fitted estimators and the list of masks indicating
                 which observations were used during fit of the estimators.
         """
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y, test_size=test_size, random_state=seed
+        )
         fitting_history: list[np.ndarray] = []
-        output_estimators = []
+        self.estimators = []
         coverage_counts = []
         performance_scores = []
-        failed_observations_idx = np.arange(X.shape[0])
-        X_fit, y_fit = X, y
+        failed_observations_idx = np.arange(X_train.shape[0])
+        X_fit, y_fit = X_train, y_train
         while self.estimator_generator.has_next() and not self.__fitting_stop_condition(
             fitting_history
         ):
             # Generate next iterator
             estimator = self.estimator_generator.fit_next_estimator(X_fit, y_fit)
-            output_estimators.append(estimator)
+            self.estimators.append(estimator)
 
             # Make and evaluate predictions
             estimator_predictions = self.prediction_generator.make_prediction_train(
                 estimator, X_fit
             )
-            performance_score = self.metric(y_fit, estimator.predict(X_fit))
-            performance_scores.append(performance_score)
+
             failed_observations_mask = estimator_predictions != y_fit
             coverage_counts.append(X_fit.shape[0] - failed_observations_mask.sum())
 
@@ -210,10 +226,28 @@ class Hellsemble(BaseEstimator):
                 X_fit[failed_observations_mask],
                 y_fit[failed_observations_mask],
             )
-        return output_estimators, fitting_history, coverage_counts, performance_scores
+
+            if len(self.estimators) > 1:
+                self.routing_model = self.__fit_routing_model(
+                    self.routing_model,
+                    X,
+                    fitting_history + [fitting_history_entry],
+                )
+
+            # Validate the ensemble
+            val_score = self.evaluate_hellsemble(X_val, y_val)
+            performance_scores.append(val_score)
+            if val_score >= threshold:
+                break
+        return fitting_history, coverage_counts, performance_scores
 
     def __fit_estimators_greedy(
-        self, X: Union[np.ndarray, pd.DataFrame], y: Union[np.ndarray, pd.Series]
+        self,
+        X: Union[np.ndarray, pd.DataFrame],
+        y: Union[np.ndarray, pd.Series],
+        test_size: float,
+        threshold: float,
+        seed: int | None,
     ) -> None:
         """
         Fits a sequence of estimators and tracks their performance.
@@ -230,12 +264,15 @@ class Hellsemble(BaseEstimator):
             list[np.ndarray]: list of masks indicating
                 which observations were used during fit of the estimators
         """
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y, test_size=test_size, random_state=seed
+        )
         fitting_history: list[np.ndarray] = []
         self.estimators = []
         coverage_counts = []
         performance_scores = []
-        failed_observations_idx = np.arange(X.shape[0])
-        X_fit, y_fit = X, y
+        failed_observations_idx = np.arange(X_train.shape[0])
+        X_fit, y_fit = X_train, y_train
 
         best_score = 0
 
@@ -266,7 +303,7 @@ class Hellsemble(BaseEstimator):
                         fitting_history + [fitting_history_entry],
                     )
                 # predictions = self.predict(X)
-                current_score = self.evaluate_hellsemble(X, y)
+                current_score = self.evaluate_hellsemble(X_val, y_val)
                 self.estimators.pop()
 
                 if current_score >= best_ensemble_score:
@@ -297,6 +334,8 @@ class Hellsemble(BaseEstimator):
                 )
 
                 if len(failed_observations_idx) == 0:
+                    break
+                if best_score >= threshold:
                     break
             else:
                 break
@@ -380,7 +419,7 @@ class Hellsemble(BaseEstimator):
             list[float]: List of metric scores for each step in the ensemble.
         """
         try:
-            estimators_copy = self.estimators.copy.deepcopy()
+            estimators_copy = copy.deepcopy(self.estimators)
             scores = []
             for i in range(1, len(estimators_copy) + 1):
                 self.estimators = estimators_copy[:i]
