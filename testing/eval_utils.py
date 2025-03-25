@@ -31,8 +31,7 @@ def calculate_adtm(results: Dict) -> Dict:
     return adtm_scores
 
 
-def calculate_ranks(results: Dict, highest_best: bool = True) -> Dict:
-
+def calculate_ranks(results: Dict, highest_best: bool = False) -> Dict:
     model_scores = {}
     for dataset, data in results.items():
         for model_type, models in data.items():
@@ -53,11 +52,15 @@ def calculate_ranks(results: Dict, highest_best: bool = True) -> Dict:
         if not highest_best:
             scores = [-score for score in scores]
         ranks.append(rankdata(scores).tolist())
+
     ranks_df = pd.DataFrame(ranks, columns=models)
     average_ranks = {model: 0 for model in model_scores.keys()}
+
     for rank in ranks:
-        for i, model in enumerate(models):
-            average_ranks[model] += rank[i]
+        if len(rank) == len(models):
+            for i, model in enumerate(models):
+                average_ranks[model] += rank[i]
+
     average_ranks = {
         model: rank / len(results) for model, rank in average_ranks.items()
     }

@@ -271,18 +271,19 @@ class Hellsemble(BaseEstimator):
         self.estimators = []
         coverage_counts = []
         performance_scores = []
-        failed_observations_idx = np.arange(X_train.shape[0])
+
         X_fit, y_fit = X_train, y_train
 
         best_score = 0
 
-        while not self.__fitting_stop_condition(fitting_history):
+        while True:
             best_model = None
             best_ensemble_score = best_score
             self.estimator_generator.reset_generator()
-
+            failed_observations_idx = np.arange(X_fit.shape[0])
             # Going through provided model list
             while self.estimator_generator.has_next():
+
                 estimator = self.estimator_generator.fit_next_estimator(X_fit, y_fit)
                 predictions = self.prediction_generator.make_prediction_train(
                     estimator, X_fit
@@ -325,14 +326,41 @@ class Hellsemble(BaseEstimator):
                 fitting_history_entry = np.full((X.shape[0]), False)
                 fitting_history_entry[failed_observations_idx] = True
                 fitting_history.append(fitting_history_entry)
-                X_fit, y_fit = (
-                    X_fit[failed_observations_mask],
-                    y_fit[failed_observations_mask],
+
+                # add regularization - some good observations go through
+                train_score = self.evaluate_hellsemble(X_train, y_train)
+                val_score = self.evaluate_hellsemble(X_val, y_val)
+                num_additional_correct = int(
+                    max(
+                        0,
+                        (train_score - val_score)
+                        / train_score
+                        * (X_train.shape[0] - failed_observations_mask.sum()),
+                    )
+                )
+                additional_correct_idx = np.random.choice(
+                    np.where(~failed_observations_mask)[0],
+                    size=min(num_additional_correct, (~failed_observations_mask).sum()),
+                    replace=False,
+                )
+                failed_observations_idx = np.concatenate(
+                    [failed_observations_idx, additional_correct_idx]
                 )
 
-                if len(failed_observations_idx) == 0:
-                    break
-                if best_score >= threshold:
+                failed_observations_mask_new = np.isin(
+                    np.arange(X_fit.shape[0]), failed_observations_idx
+                )
+
+                X_fit, y_fit = (
+                    X_fit[failed_observations_mask_new],
+                    y_fit[failed_observations_mask_new],
+                )
+
+                if len(
+                    failed_observations_idx
+                ) == 0 or self.__fitting_stop_condition_greedy(
+                    fitting_history, val_score
+                ):
                     break
             else:
                 break
@@ -342,6 +370,14 @@ class Hellsemble(BaseEstimator):
     def __fitting_stop_condition(self, fitting_history: list[np.ndarray]) -> bool:
         # Place for additional stop conditions
         return len(fitting_history) > 0 and (~fitting_history[-1]).mean() >= 0.95
+
+    def __fitting_stop_condition_greedy(
+        self, fitting_history: list[np.ndarray], val_score: float
+    ) -> bool:
+        # Stop if all observations are correctly predicted or validation score exceeds 0.95
+        return len(fitting_history) > 0 and (
+            (~fitting_history[-1]).mean() == 0 or val_score >= 0.95
+        )
 
     def __fit_routing_model(
         self,

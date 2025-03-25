@@ -51,11 +51,11 @@ def main(
 
 if __name__ == "__main__":
     # Define the directories containing the training and test data.
-    train_dir = "resources/data/openml/train"
-    test_dir = "resources/data/openml/test"
+    train_dir = "resources/data/aml_sample/train"
+    test_dir = "resources/data/aml_sample/test"
 
     # Define the directory to save the results to.
-    output_dir = "resources/results/example"
+    output_dir = "resources/results/val_greedy"
 
     # Define the base models to train and test.
     models = [

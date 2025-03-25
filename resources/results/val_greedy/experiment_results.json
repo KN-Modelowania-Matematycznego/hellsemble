@@ -1,0 +1,260 @@
+{
+    "credit-approval": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7976878612716763,
+            "LogisticRegression()": 0.838150289017341,
+            "DecisionTreeClassifier()": 0.791907514450867,
+            "LinearDiscriminantAnalysis()": 0.8208092485549133,
+            "QuadraticDiscriminantAnalysis()": 0.5491329479768786,
+            "GaussianNB()": 0.7109826589595376
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8092485549132948,
+            "Hellsemble_greedy": 0.2774566473988439
+        }
+    },
+    "dresses-sales": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.536,
+            "LogisticRegression()": 0.672,
+            "DecisionTreeClassifier()": 0.544,
+            "LinearDiscriminantAnalysis()": 0.648,
+            "QuadraticDiscriminantAnalysis()": 0.464,
+            "GaussianNB()": 0.416
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.56,
+            "Hellsemble_greedy": 0.52
+        }
+    },
+    "bank-marketing": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8993187649296647,
+            "LogisticRegression()": 0.9006458462355127,
+            "DecisionTreeClassifier()": 0.8772892152525879,
+            "LinearDiscriminantAnalysis()": 0.9021498717154738,
+            "QuadraticDiscriminantAnalysis()": 0.8732194992479873,
+            "GaussianNB()": 0.8668495089799169
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8966646023179686,
+            "Hellsemble_greedy": 0.09935415376448731
+        }
+    },
+    "banknote-authentication": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9941690962099126,
+            "LogisticRegression()": 0.9795918367346939,
+            "DecisionTreeClassifier()": 0.9766763848396501,
+            "LinearDiscriminantAnalysis()": 0.9708454810495627,
+            "QuadraticDiscriminantAnalysis()": 0.9795918367346939,
+            "GaussianNB()": 0.8367346938775511
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9941690962099126,
+            "Hellsemble_greedy": 0.9941690962099126
+        }
+    },
+    "ilpd": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.6575342465753424,
+            "LogisticRegression()": 0.7328767123287672,
+            "DecisionTreeClassifier()": 0.6712328767123288,
+            "LinearDiscriminantAnalysis()": 0.726027397260274,
+            "QuadraticDiscriminantAnalysis()": 0.5273972602739726,
+            "GaussianNB()": 0.5342465753424658
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.6506849315068494,
+            "Hellsemble_greedy": 0.3561643835616438
+        }
+    },
+    "adult": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8303169273605765,
+            "LogisticRegression()": 0.8488248300712472,
+            "DecisionTreeClassifier()": 0.814593399393989,
+            "LinearDiscriminantAnalysis()": 0.8374416509704365,
+            "QuadraticDiscriminantAnalysis()": 0.45156006879043487,
+            "GaussianNB()": 0.583817869134387
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8268774056178855,
+            "Hellsemble_greedy": 0.2189009909098354
+        }
+    },
+    "Internet-Advertisements": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9621951219512195,
+            "LogisticRegression()": 0.9695121951219512,
+            "DecisionTreeClassifier()": 0.9646341463414634,
+            "LinearDiscriminantAnalysis()": 0.9609756097560975,
+            "QuadraticDiscriminantAnalysis()": 0.9426829268292682,
+            "GaussianNB()": 0.8085365853658537
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9463414634146341,
+            "Hellsemble_greedy": 0.9658536585365853
+        }
+    },
+    "credit-g": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.748,
+            "LogisticRegression()": 0.776,
+            "DecisionTreeClassifier()": 0.708,
+            "LinearDiscriminantAnalysis()": 0.788,
+            "QuadraticDiscriminantAnalysis()": 0.732,
+            "GaussianNB()": 0.716
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.74,
+            "Hellsemble_greedy": 0.704
+        }
+    },
+    "Bioresponse": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7484008528784648,
+            "LogisticRegression()": 0.7270788912579957,
+            "DecisionTreeClassifier()": 0.7014925373134329,
+            "LinearDiscriminantAnalysis()": 0.6375266524520256,
+            "QuadraticDiscriminantAnalysis()": 0.5746268656716418,
+            "GaussianNB()": 0.6130063965884861
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.7356076759061834,
+            "Hellsemble_greedy": 0.4904051172707889
+        }
+    },
+    "blood-transfusion-service-center": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7647058823529411,
+            "LogisticRegression()": 0.7647058823529411,
+            "DecisionTreeClassifier()": 0.7486631016042781,
+            "LinearDiscriminantAnalysis()": 0.7647058823529411,
+            "QuadraticDiscriminantAnalysis()": 0.7700534759358288,
+            "GaussianNB()": 0.732620320855615
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.7112299465240641,
+            "Hellsemble_greedy": 0.27807486631016043
+        }
+    },
+    "jm1": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7983100661278472,
+            "LogisticRegression()": 0.8089639970609845,
+            "DecisionTreeClassifier()": 0.74834680382072,
+            "LinearDiscriminantAnalysis()": 0.8093313739897134,
+            "QuadraticDiscriminantAnalysis()": 0.7950036737692873,
+            "GaussianNB()": 0.7983100661278472
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.7913299044819986,
+            "Hellsemble_greedy": 0.19103600293901543
+        }
+    },
+    "diabetes": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7447916666666666,
+            "LogisticRegression()": 0.7708333333333334,
+            "DecisionTreeClassifier()": 0.671875,
+            "LinearDiscriminantAnalysis()": 0.78125,
+            "QuadraticDiscriminantAnalysis()": 0.7447916666666666,
+            "GaussianNB()": 0.7708333333333334
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.71875,
+            "Hellsemble_greedy": 0.4166666666666667
+        }
+    },
+    "climate-model-simulation-crashes": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9333333333333333,
+            "LogisticRegression()": 0.9629629629629629,
+            "DecisionTreeClassifier()": 0.8888888888888888,
+            "LinearDiscriminantAnalysis()": 0.9481481481481482,
+            "QuadraticDiscriminantAnalysis()": 0.9185185185185185,
+            "GaussianNB()": 0.9333333333333333
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.9333333333333333,
+            "Hellsemble_greedy": 0.9629629629629629
+        }
+    },
+    "electricity": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8337747175141242,
+            "LogisticRegression()": 0.7597104519774012,
+            "DecisionTreeClassifier()": 0.8810911016949152,
+            "LinearDiscriminantAnalysis()": 0.7304908192090396,
+            "QuadraticDiscriminantAnalysis()": 0.7089512711864406,
+            "GaussianNB()": 0.7185734463276836
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8209745762711864,
+            "Hellsemble_greedy": 0.7528248587570622
+        }
+    },
+    "breast-w": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.9657142857142857,
+            "LogisticRegression()": 0.9657142857142857,
+            "DecisionTreeClassifier()": 0.96,
+            "LinearDiscriminantAnalysis()": 0.9428571428571428,
+            "QuadraticDiscriminantAnalysis()": 0.9428571428571428,
+            "GaussianNB()": 0.9542857142857143
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.96,
+            "Hellsemble_greedy": 0.9657142857142857
+        }
+    },
+    "churn": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.8824,
+            "LogisticRegression()": 0.8576,
+            "DecisionTreeClassifier()": 0.9168,
+            "LinearDiscriminantAnalysis()": 0.8448,
+            "QuadraticDiscriminantAnalysis()": 0.8576,
+            "GaussianNB()": 0.8608
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.8776,
+            "Hellsemble_greedy": 0.7272
+        }
+    },
+    "cylinder-bands": {
+        "base_models": {
+            "KNeighborsClassifier()": 0.7185185185185186,
+            "LogisticRegression()": 0.6814814814814815,
+            "DecisionTreeClassifier()": 0.725925925925926,
+            "LinearDiscriminantAnalysis()": 0.7111111111111111,
+            "QuadraticDiscriminantAnalysis()": 0.6370370370370371,
+            "GaussianNB()": 0.6222222222222222
+        },
+        "hellsemble": {
+            "Hellsemble_sequential": 0.6888888888888889,
+            "Hellsemble_greedy": 0.562962962962963
+        }
+    },
+    "average_ranks": {
+        "KNeighborsClassifier()": 3.1176470588235294,
+        "LogisticRegression()": 2.4705882352941178,
+        "DecisionTreeClassifier()": 4.5,
+        "LinearDiscriminantAnalysis()": 3.4411764705882355,
+        "QuadraticDiscriminantAnalysis()": 6.0,
+        "GaussianNB()": 6.0,
+        "Hellsemble_sequential": 4.205882352941177,
+        "Hellsemble_greedy": 6.264705882352941
+    },
+    "ADTM": {
+        "KNeighborsClassifier()": 0.6038319476766474,
+        "LogisticRegression()": 0.49581614831902576,
+        "DecisionTreeClassifier()": 0.5904993211916566,
+        "LinearDiscriminantAnalysis()": 0.5270553987054148,
+        "QuadraticDiscriminantAnalysis()": 0.5338920110272296,
+        "GaussianNB()": 0.5906717414939682,
+        "Hellsemble_sequential": 0.5611395104080622,
+        "Hellsemble_greedy": 0.5124113095560262
+    }
+}
