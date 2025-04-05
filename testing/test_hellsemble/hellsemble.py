@@ -333,15 +333,25 @@ class Hellsemble(BaseEstimator):
                 num_additional_correct = int(
                     max(
                         0,
-                        (train_score - val_score)
-                        / train_score
-                        * (X_train.shape[0] - failed_observations_mask.sum()),
+                        (
+                            (train_score - val_score)
+                            / train_score
+                            * (X_train.shape[0] - failed_observations_mask.sum())
+                            if train_score != 0
+                            else 0
+                        ),
                     )
                 )
-                additional_correct_idx = np.random.choice(
-                    np.where(~failed_observations_mask)[0],
-                    size=min(num_additional_correct, (~failed_observations_mask).sum()),
-                    replace=False,
+                additional_correct_idx = (
+                    np.random.choice(
+                        np.where(~failed_observations_mask)[0],
+                        size=min(
+                            num_additional_correct, (~failed_observations_mask).sum()
+                        ),
+                        replace=False,
+                    )
+                    if num_additional_correct > 0
+                    else np.array([], dtype=int)
                 )
                 failed_observations_idx = np.concatenate(
                     [failed_observations_idx, additional_correct_idx]

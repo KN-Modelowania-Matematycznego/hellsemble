@@ -25,7 +25,7 @@ def calculate_adtm(results: Dict) -> Dict:
             adtm_scores[model_name] = 0
         else:
             for metric in metrics:
-                adtm_sum += (metric - metric_worst) / (metric_best - metric_worst)
+                adtm_sum += (metric - metric_best) / (metric_best - metric_worst)
             adtm_scores[model_name] = adtm_sum / count if count > 0 else 0
 
     return adtm_scores
