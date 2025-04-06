@@ -82,7 +82,7 @@ def test__fit_estimators_greedy(
         estimator_generator, prediction_generator, routing_model
     )
     X, y = train_data
-    hellsemble._Hellsemble__fit_estimators_greedy(X, y)
+    hellsemble._Hellsemble__fit_estimators_greedy(X, y, 0.25, 0.95, 123)
     predictions = hellsemble.predict(X)
     assert hellsemble.metric == "accuracy"
     assert len(hellsemble.estimators) == 1

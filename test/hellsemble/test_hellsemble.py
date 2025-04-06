@@ -133,7 +133,9 @@ def test__fit_estimators(
 
     # When
     estimators, actual_fitting_history = (
-        hellsemble._Hellsemble__fit_estimators_sequential(X, y)
+        hellsemble._Hellsemble__fit_estimators_sequential(
+            X, y, 0.25, 0.95, 123
+        )
     )
 
     # Then

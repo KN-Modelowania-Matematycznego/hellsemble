@@ -17,7 +17,6 @@ from sklearn.model_selection import train_test_split
 from .estimator_generator import EstimatorGenerator
 from .prediction_generator import PredictionGenerator
 
-
 class Hellsemble(BaseEstimator):
     """
     Ensemble classifier that implements Hellsemeble ensembling strategy.
@@ -94,14 +93,18 @@ class Hellsemble(BaseEstimator):
         if isinstance(X, pd.DataFrame):
             X = X.values
         if self.mode == "greedy":
-            self.__fitting_history = self.__fit_estimators_greedy(
-                X, y, validation_size, stopping_threshold, seed
-            )
-        else:
-            self.estimators, self.__fitting_history = (
-                self.__fit_estimators_sequential(
+            self.__fitting_history, self.__validation_fitting_history = (
+                self.__fit_estimators_greedy(
                     X, y, validation_size, stopping_threshold, seed
                 )
+            )
+        else:
+            (
+                self.estimators,
+                self.__fitting_history,
+                self.__validation_fitting_history,
+            ) = self.__fit_estimators_sequential(
+                X, y, validation_size, stopping_threshold, seed
             )
         if len(self.estimators) > 1:
             self.routing_model = self.__fit_routing_model(
@@ -174,7 +177,7 @@ class Hellsemble(BaseEstimator):
         test_size: float,
         threshold: float,
         seed: int | None,
-    ) -> Tuple[list[ClassifierMixin], list[np.ndarray]]:
+    ) -> Tuple[list[ClassifierMixin], list[np.ndarray], list[np.ndarray]]:
         """
         Fits a sequence of estimators and tracks their performance.
         This method iterates through the estimator generator, fitting
@@ -190,18 +193,21 @@ class Hellsemble(BaseEstimator):
                 list of fitted estimators and the list of masks indicating
                 which observations were used during fit of the estimators.
         """
-        X_train, X_val, y_train, y_val = train_test_split(
+        X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, random_state=seed
         )
 
         fitting_history: list[np.ndarray] = []
+        validation_fitting_history: list[np.ndarray] = []
         output_estimators = []
         self.meta = []
-        failed_observations_idx = np.arange(X_train.shape[0])
+        failed_observations_idx_fit = np.arange(X_train.shape[0])
+        failed_observations_idx_val = np.arange(X_test.shape[0])
         X_fit, y_fit = X_train, y_train
+        X_val, y_val = X_test, y_test
         while (
             self.estimator_generator.has_next()
-            and not self.__fitting_stop_condition(fitting_history)
+            and not self.__fitting_stop_condition(validation_fitting_history)
         ):
             # Generate next iterator
             estimator = self.estimator_generator.fit_next_estimator(
@@ -209,35 +215,55 @@ class Hellsemble(BaseEstimator):
             )
             output_estimators.append(estimator)
 
-            # Make and evaluate predictions
-            estimator_predictions = (
-                self.prediction_generator.make_prediction_train(
-                    estimator, X_fit
-                )
+            # Make and evaluate predictions on training set
+            fit_predictions = self.prediction_generator.make_prediction_train(
+                estimator, X_fit
             )
-            failed_observations_mask = estimator_predictions != y_fit
+            failed_observations_mask_fit = fit_predictions != y_fit
+
+            # Make and evaluate predictions on validation set
+            val_predictions = self.prediction_generator.make_prediction_train(
+                estimator, X_val
+            )
+            failed_observations_mask_val = val_predictions != y_val
 
             # Create prediction history entry
-            failed_observations_idx = failed_observations_idx[
-                failed_observations_mask
+            failed_observations_idx_fit = failed_observations_idx_fit[
+                failed_observations_mask_fit
             ]
-            fitting_history_entry = np.full((X.shape[0]), False)
-            fitting_history_entry[failed_observations_idx] = True
+            fitting_history_entry = np.full((X_train.shape[0]), False)
+            fitting_history_entry[failed_observations_idx_fit] = True
             fitting_history.append(fitting_history_entry)
 
-            # Update fitting data
+            failed_observations_idx_val = failed_observations_idx_val[
+                failed_observations_mask_val
+            ]
+            validation_fitting_history_entry = np.full(
+                (X_test.shape[0]), False
+            )
+            validation_fitting_history_entry[failed_observations_mask_val] = (
+                True
+            )
+            validation_fitting_history.append(validation_fitting_history_entry)
+
+            # Update fitting and validation data
             X_fit, y_fit = (
-                X_fit[failed_observations_mask],
-                y_fit[failed_observations_mask],
+                X_fit[failed_observations_mask_fit],
+                y_fit[failed_observations_mask_fit],
+            )
+
+            X_val, y_val = (
+                X_val[failed_observations_mask_val],
+                y_val[failed_observations_mask_val],
             )
 
             # Validate the ensemble
-            val_score = self.evaluate_hellsemble(X_val, y_val)
+            val_score = self.evaluate_hellsemble(X_test, y_test)
             self.meta.append(val_score)
             if val_score >= threshold:
                 break
 
-        return output_estimators, fitting_history
+        return output_estimators, fitting_history, validation_fitting_history
 
     def __fit_estimators_greedy(
         self,
@@ -246,7 +272,7 @@ class Hellsemble(BaseEstimator):
         test_size: float,
         threshold: float,
         seed: int | None,
-    ) -> list[np.ndarray]:
+    ) -> Tuple[list[np.ndarray], list[np.ndarray]]:
         """
         Fits a sequence of estimators and tracks their performance.
         It uses the logic of fitting subsequent classifiers on observations
@@ -262,19 +288,22 @@ class Hellsemble(BaseEstimator):
             list[np.ndarray]: list of masks indicating
                 which observations were used during fit of the estimators
         """
-        X_train, X_val, y_train, y_val = train_test_split(
+        X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, random_state=seed
         )
 
         fitting_history: list[np.ndarray] = []
+        validation_fitting_history: list[np.ndarray] = []
         self.estimators = []
         self.meta = []
-        failed_observations_idx = np.arange(X_train.shape[0])
+        failed_observations_idx_fit = np.arange(X_train.shape[0])
+        failed_observations_idx_val = np.arange(X_test.shape[0])
         X_fit, y_fit = X_train, y_train
+        X_val, y_val = X_test, y_test
 
         best_score = 0
 
-        while not self.__fitting_stop_condition(fitting_history):
+        while not self.__fitting_stop_condition(validation_fitting_history):
             best_model = None
             best_ensemble_score = best_score
             self.estimator_generator.reset_generator()
@@ -287,8 +316,10 @@ class Hellsemble(BaseEstimator):
                 predictions = self.prediction_generator.make_prediction_train(
                     estimator, X_fit
                 )
+                print(
+                    f"X_fit shape: {X_fit.shape}, y_fit shape: {y_fit.shape}, fit_predictions shape: {predictions.shape}")
                 failed_observations_mask = predictions != y_fit
-                failed_observations_idx_temp = failed_observations_idx[
+                failed_observations_idx_temp = failed_observations_idx_fit[
                     failed_observations_mask
                 ]
 
@@ -302,7 +333,7 @@ class Hellsemble(BaseEstimator):
                         fitting_history + [fitting_history_entry],
                     )
                 # predictions = self.predict(X)
-                current_score = self.evaluate_hellsemble(X_val, y_val)
+                current_score = self.evaluate_hellsemble(X_test, y_test)
                 self.estimators.pop()
 
                 if current_score >= best_ensemble_score:
@@ -314,36 +345,70 @@ class Hellsemble(BaseEstimator):
                 self.estimators.append(best_model)
                 best_score = best_ensemble_score
                 self.meta.append(best_score)
-                predictions = self.prediction_generator.make_prediction_train(
-                    best_model, X_fit
+
+                # Make and evaluate predictions on training set
+                fit_predictions = (
+                    self.prediction_generator.make_prediction_train(
+                        best_model, X_fit
+                    )
                 )
-                failed_observations_mask = predictions != y_fit
-                failed_observations_idx = failed_observations_idx[
-                    failed_observations_mask
+                failed_observations_mask_fit = fit_predictions != y_fit
+
+                # Make and evaluate predictions on validation set
+                val_predictions = (
+                    self.prediction_generator.make_prediction_train(
+                        best_model, X_val
+                    )
+                )
+                failed_observations_mask_val = val_predictions != y_val
+
+                # Create prediction history entry
+                failed_observations_idx_fit = failed_observations_idx_fit[
+                    failed_observations_mask_fit
                 ]
-
                 fitting_history_entry = np.full((X_train.shape[0]), False)
-                fitting_history_entry[failed_observations_idx] = True
+                fitting_history_entry[failed_observations_idx_fit] = True
                 fitting_history.append(fitting_history_entry)
-                X_fit, y_fit = (
-                    X_fit[failed_observations_mask],
-                    y_fit[failed_observations_mask],
+
+                failed_observations_idx_val = failed_observations_idx_val[
+                    failed_observations_mask_val
+                ]
+                validation_fitting_history_entry = np.full(
+                    (X_test.shape[0]), False
+                )
+                validation_fitting_history_entry[
+                    failed_observations_mask_val
+                ] = True
+                validation_fitting_history.append(
+                    validation_fitting_history_entry
                 )
 
-                if len(failed_observations_idx) == 0:
+                # Update fitting and validation data
+                X_fit, y_fit = (
+                    X_fit[failed_observations_mask_fit],
+                    y_fit[failed_observations_mask_fit],
+                )
+
+                X_val, y_val = (
+                    X_val[failed_observations_mask_val],
+                    y_val[failed_observations_mask_val],
+                )
+
+                if len(failed_observations_idx_fit) == 0:
                     break
                 if best_score >= threshold:
                     break
             else:
                 break
-        return fitting_history
+        return fitting_history, validation_fitting_history
 
     def __fitting_stop_condition(
-        self, fitting_history: list[np.ndarray]
+        self, validation_fitting_history: list[np.ndarray]
     ) -> bool:
         # Place for additional stop conditions
         return (
-            len(fitting_history) > 0 and (~fitting_history[-1]).mean() >= 0.95
+            len(validation_fitting_history) > 0
+            and (~validation_fitting_history[-1]).mean() >= 0.95
         )
 
     def __fit_routing_model(
@@ -418,3 +483,4 @@ class Hellsemble(BaseEstimator):
 
         y_pred = self.predict(X)
         return metrics_map[self.metric](y, y_pred)
+
