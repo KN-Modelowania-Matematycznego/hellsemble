@@ -17,6 +17,7 @@ from sklearn.model_selection import train_test_split
 from .estimator_generator import EstimatorGenerator
 from .prediction_generator import PredictionGenerator
 
+
 class Hellsemble(BaseEstimator):
     """
     Ensemble classifier that implements Hellsemeble ensembling strategy.
@@ -316,8 +317,7 @@ class Hellsemble(BaseEstimator):
                 predictions = self.prediction_generator.make_prediction_train(
                     estimator, X_fit
                 )
-                print(
-                    f"X_fit shape: {X_fit.shape}, y_fit shape: {y_fit.shape}, fit_predictions shape: {predictions.shape}")
+
                 failed_observations_mask = predictions != y_fit
                 failed_observations_idx_temp = failed_observations_idx_fit[
                     failed_observations_mask
@@ -483,4 +483,3 @@ class Hellsemble(BaseEstimator):
 
         y_pred = self.predict(X)
         return metrics_map[self.metric](y, y_pred)
-
