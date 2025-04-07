@@ -51,8 +51,8 @@ def main(
 
 if __name__ == "__main__":
     # Define the directories containing the training and test data.
-    train_dir = "resources/data/openml/train"
-    test_dir = "resources/data/openml/test"
+    train_dir = "resources/data/tabzilla/train"
+    test_dir = "resources/data/tabzilla/test"
 
     # Define the directory to save the results to.
     output_dir = "resources/results/example"
