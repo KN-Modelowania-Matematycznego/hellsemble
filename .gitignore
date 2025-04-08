@@ -5,3 +5,5 @@ notebooks
 **/*.csv
 model_comparison.html
 resources/data
+.ipynb_checkpoints/
+.pytest_cache
