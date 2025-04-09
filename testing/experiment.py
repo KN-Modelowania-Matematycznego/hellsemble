@@ -5,9 +5,9 @@ import numpy as np
 from datetime import datetime
 import json
 import os
-from testing.test_hellsemble.hellsemble import Hellsemble
-from testing.test_hellsemble.estimator_generator import EstimatorGenerator
-from testing.test_hellsemble.prediction_generator import (
+from hellsemble.hellsemble import Hellsemble
+from hellsemble.estimator_generator import EstimatorGenerator
+from hellsemble.prediction_generator import (
     FixedThresholdPredictionGenerator,
 )
 from loguru import logger
