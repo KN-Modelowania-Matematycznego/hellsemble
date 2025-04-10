@@ -1,6 +1,6 @@
 from testing.experiment import HellsembleExperiment
-from testing.test_hellsemble.estimator_generator import PredefinedEstimatorsGenerator
-from testing.test_hellsemble.prediction_generator import (
+from hellsemble.estimator_generator import PredefinedEstimatorsGenerator
+from hellsemble.prediction_generator import (
     FixedThresholdPredictionGenerator,
 )
 from sklearn.neighbors import KNeighborsClassifier
@@ -51,8 +51,8 @@ def main(
 
 if __name__ == "__main__":
     # Define the directories containing the training and test data.
-    train_dir = "resources/data/tabzilla/train"
-    test_dir = "resources/data/tabzilla/test"
+    train_dir = "resources/data/adult/train"
+    test_dir = "resources/data/adult/test"
 
     # Define the directory to save the results to.
     output_dir = "resources/results/example"
