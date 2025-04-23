@@ -2,7 +2,7 @@
 #SBATCH --account=mi2lab-normal
 #SBATCH --job-name=borf
 #SBATCH --partition=short
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=32G
 #SBATCH --time=01:00:00
 #SBATCH --ntasks=1
