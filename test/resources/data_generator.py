@@ -142,7 +142,7 @@ class Data:
             axes[row, col].grid(True)
 
         plt.tight_layout()
-        plt.show()
+        # plt.show()
 
     def plot_segments_pca(self):
         """
@@ -181,4 +181,4 @@ class Data:
             axes[row, col].grid(True)
 
         plt.tight_layout()
-        plt.show()
+        # plt.show()

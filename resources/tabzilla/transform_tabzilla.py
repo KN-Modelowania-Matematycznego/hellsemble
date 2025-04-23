@@ -1,9 +1,8 @@
-import os
 import gzip
-import json
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
 
 
 def transform_tabzilla_to_csv(tabzilla_dir: str, output_dir: str) -> None:
