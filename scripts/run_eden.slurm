@@ -22,7 +22,6 @@ FILE_NAME=${FILE_LIST[$SLURM_ARRAY_TASK_ID]}
 
 
 echo "Used data: $FILE_NAME"
-mkdir -p "resources/results/$FILE_NAME"
 
 # Run your Python script with this file
 python bin/run_experiment.py \

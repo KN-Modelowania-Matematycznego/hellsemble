@@ -73,6 +73,8 @@ class HellsembleExperiment:
         self.experiment_type = experiment_type
         self.prediction_generator = prediction_generator
 
+        Path(self.output_dir).mkdir(parents=True, exist_ok=True)
+
     def _get_data_from_file(self, train_file: str, test_file: str):
         train_data = pd.read_csv(train_file)
         test_data = pd.read_csv(test_file)

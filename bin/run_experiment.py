@@ -1,15 +1,9 @@
 from argparse import ArgumentParser, Namespace
+from itertools import product
 
-from sklearn.discriminant_analysis import (
-    LinearDiscriminantAnalysis,
-    QuadraticDiscriminantAnalysis,
-)
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.tree import DecisionTreeClassifier
 
+from bin.utils.exp_config import MODELS, ROUTERS
 from hellsemble.estimator_generator import PredefinedEstimatorsGenerator
 from hellsemble.prediction_generator import FixedThresholdPredictionGenerator
 from testing.experiment import HellsembleExperiment
@@ -24,6 +18,7 @@ def get_args() -> Namespace:
 
 
 def main(
+    idx,
     models,
     routing_model,
     metric,
@@ -36,6 +31,7 @@ def main(
     train_dir = args.train_dir
     test_dir = args.test_dir
     output_dir = args.output_dir
+    output_dir += f"_{idx:03}"
 
     experiment = HellsembleExperiment(
         train_dir=train_dir,
@@ -54,18 +50,6 @@ def main(
 
 if __name__ == "__main__":
 
-    # Define the base models to train and test.
-    models = [
-        KNeighborsClassifier(),
-        LogisticRegression(),
-        DecisionTreeClassifier(),
-        LinearDiscriminantAnalysis(),
-        QuadraticDiscriminantAnalysis(),
-        GaussianNB(),
-    ]
-
-    # Define the routing model used in the Hellsemble ensemble.
-    routing_model = KNeighborsClassifier()
     estimators_generator = PredefinedEstimatorsGenerator
     prediction_generator = FixedThresholdPredictionGenerator(0.5)
 
@@ -75,12 +59,15 @@ if __name__ == "__main__":
     automl = None  # set to AutoSklearnRun or AutoGluonRun to use AutoML
     experiment_type = "full"
 
-    main(
-        models,
-        routing_model,
-        metric,
-        estimators_generator,
-        prediction_generator,
-        automl,
-        experiment_type,
-    )
+    for idx, (models, routing_model) in enumerate(product(MODELS, ROUTERS)):
+
+        main(
+            idx,
+            models,
+            routing_model,
+            metric,
+            estimators_generator,
+            prediction_generator,
+            automl,
+            experiment_type,
+        )
