@@ -49,7 +49,6 @@ def main(
 
 
 if __name__ == "__main__":
-
     estimators_generator = PredefinedEstimatorsGenerator
     prediction_generator = FixedThresholdPredictionGenerator(0.5)
 
@@ -60,7 +59,6 @@ if __name__ == "__main__":
     experiment_type = "full"
 
     for idx, (models, routing_model) in enumerate(product(MODELS, ROUTERS)):
-
         main(
             idx,
             models,
