@@ -1,18 +1,13 @@
 from __future__ import annotations
 
+import copy
 from typing import Callable, Literal, Tuple
 
-import copy
 import numpy as np
 import pandas as pd
 from pydantic import validate_call
 from sklearn.base import BaseEstimator, ClassifierMixin, clone
-from sklearn.metrics import (
-    accuracy_score,
-    balanced_accuracy_score,
-    f1_score,
-    roc_auc_score,
-)
+from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 from .estimator_generator import EstimatorGenerator
@@ -55,15 +50,15 @@ class Hellsemble(BaseEstimator):
         prediction_generator: PredictionGenerator,
         routing_model: ClassifierMixin,
         mode: Literal["greedy", "sequential"] = "greedy",
-        metric: (
-            Callable | Literal["accuracy", "balanced_accuracy", "roc_auc", "f1"]
-        ) = "accuracy",
+        metric: Callable = accuracy_score,
+        is_pred_proba: bool = False,
     ):
         self.estimator_generator = estimator_generator
         self.routing_model = routing_model
         self.prediction_generator = prediction_generator
         self.mode = mode
         self.metric = metric
+        self.is_pred_proba = is_pred_proba
 
     def fit(
         self,
@@ -135,7 +130,6 @@ class Hellsemble(BaseEstimator):
             )
 
         if len(self.estimators) > 1:
-
             n_estimators = len(self.__train_fitting_history)
             n_total = X.shape[0]
             full_fitting_history = []
@@ -308,8 +302,7 @@ class Hellsemble(BaseEstimator):
                 )
             val_score = self.evaluate_hellsemble(X_validation, y_validation)
             self.meta.append(val_score)
-            performance_score = self.evaluate_hellsemble(X_fit, y_fit)
-            performance_scores.append(performance_score)
+            performance_scores.append(val_score)
             if val_score >= threshold:
                 break
         return (
@@ -403,7 +396,7 @@ class Hellsemble(BaseEstimator):
                 fit_predictions = self.prediction_generator.make_prediction_train(
                     best_model, X_fit
                 )
-                performance_scores.append(self.evaluate_hellsemble(X_fit, y_fit))
+                performance_scores.append(self.metric(y_val, best_model.predict(X_val)))
                 failed_observations_mask_fit = fit_predictions != y_fit
                 coverage_counts.append(len(X_fit) - failed_observations_mask_fit.sum())
 
@@ -516,23 +509,11 @@ class Hellsemble(BaseEstimator):
         Returns:
             np.float64: metric score
         """
-        metrics_map = {
-            "roc_auc": roc_auc_score,
-            "accuracy": accuracy_score,
-            "balanced_accuracy": balanced_accuracy_score,
-            "f1": f1_score,
-        }
-
-        if callable(self.metric):
-            y_pred_proba = self.predict_proba(X)[:, 1]
-            return self.metric(y, y_pred_proba)
-
-        if self.metric == "roc_auc":
-            y_pred_proba = self.predict_proba(X)[:, 1]
-            return metrics_map["roc_auc"](y, y_pred_proba)
-
-        y_pred = self.predict(X)
-        return metrics_map[self.metric](y, y_pred)
+        if self.is_pred_proba:
+            y_pred = self.predict_proba(X)[:, 1]
+        else:
+            y_pred = self.predict(X)
+        return self.metric(y, y_pred)
 
     def get_progressive_scores(
         self, X: np.ndarray | pd.DataFrame, y: np.ndarray | pd.Series
