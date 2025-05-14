@@ -1,8 +1,9 @@
-from scipy.stats import rankdata
-import scikit_posthocs as sp
+from typing import Dict
+
 import matplotlib.pyplot as plt
 import pandas as pd
-from typing import Dict
+import scikit_posthocs as sp
+from scipy.stats import rankdata
 
 
 def calculate_adtm(results: Dict) -> Dict:
@@ -77,4 +78,4 @@ def generate_CD_plot(average_ranks: Dict[str, float], ranks_df: pd.DataFrame):
     # Generate the CD plot
     plt.figure(figsize=(16, 12))
     sp.sign_plot(nemenyi_results, labels=model_names)
-    plt.show()
+    # plt.show()

@@ -1,31 +1,24 @@
-from testing.experiment import HellsembleExperiment
-from testing.test_hellsemble.estimator_generator import PredefinedEstimatorsGenerator
-from testing.test_hellsemble.prediction_generator import (
-    FixedThresholdPredictionGenerator,
-)
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import (
-    RandomForestClassifier,
-    ExtraTreesClassifier,
-)
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.discriminant_analysis import (
-    LinearDiscriminantAnalysis,
-    QuadraticDiscriminantAnalysis,
-)
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neural_network import MLPClassifier
-from xgboost import XGBClassifier
+from argparse import ArgumentParser, Namespace
+from itertools import product
+
 from sklearn.metrics import accuracy_score
-from testing.autogluon_config import AutoGluonRun
-from testing.autosklearn_config import AutoSklearnRun
+
+from bin.utils.exp_config import MODELS, ROUTERS
+from hellsemble.estimator_generator import PredefinedEstimatorsGenerator
+from hellsemble.prediction_generator import FixedThresholdPredictionGenerator
+from testing.experiment import HellsembleExperiment
+
+
+def get_args() -> Namespace:
+    parser = ArgumentParser()
+    parser.add_argument("--train-dir", required=True)
+    parser.add_argument("--test-dir", required=True)
+    parser.add_argument("--output-dir", required=True)
+    return parser.parse_args()
 
 
 def main(
-    train_dir,
-    test_dir,
-    output_dir,
+    idx,
     models,
     routing_model,
     metric,
@@ -34,6 +27,12 @@ def main(
     automl,
     experiment_type,
 ):
+    args = get_args()
+    train_dir = args.train_dir
+    test_dir = args.test_dir
+    output_dir = args.output_dir
+    output_dir += f"_{idx:03}"
+
     experiment = HellsembleExperiment(
         train_dir=train_dir,
         test_dir=test_dir,
@@ -50,25 +49,6 @@ def main(
 
 
 if __name__ == "__main__":
-    # Define the directories containing the training and test data.
-    train_dir = "resources/data/openml/train"
-    test_dir = "resources/data/openml/test"
-
-    # Define the directory to save the results to.
-    output_dir = "resources/results/example"
-
-    # Define the base models to train and test.
-    models = [
-        KNeighborsClassifier(),
-        LogisticRegression(),
-        DecisionTreeClassifier(),
-        LinearDiscriminantAnalysis(),
-        QuadraticDiscriminantAnalysis(),
-        GaussianNB(),
-    ]
-
-    # Define the routing model used in the Hellsemble ensemble.
-    routing_model = KNeighborsClassifier()
     estimators_generator = PredefinedEstimatorsGenerator
     prediction_generator = FixedThresholdPredictionGenerator(0.5)
 
@@ -78,15 +58,14 @@ if __name__ == "__main__":
     automl = None  # set to AutoSklearnRun or AutoGluonRun to use AutoML
     experiment_type = "full"
 
-    main(
-        train_dir,
-        test_dir,
-        output_dir,
-        models,
-        routing_model,
-        metric,
-        estimators_generator,
-        prediction_generator,
-        automl,
-        experiment_type,
-    )
+    for idx, (models, routing_model) in enumerate(product(MODELS, ROUTERS)):
+        main(
+            idx,
+            models,
+            routing_model,
+            metric,
+            estimators_generator,
+            prediction_generator,
+            automl,
+            experiment_type,
+        )
