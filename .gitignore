@@ -6,3 +6,8 @@ notebooks
 model_comparison.html
 resources/data
 resources/tabzilla/datasets
+resources/results
+resources/tabzilla/datasets
+.ipynb_checkpoints/
+.pytest_cache
+

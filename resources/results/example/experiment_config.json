@@ -1,5 +1,5 @@
 {
-    "run_date": "2024-12-26 21:22:29",
+    "run_date": "2025-04-11 01:24:23",
     "automl": "NoneType",
     "models": [
         "KNeighborsClassifier()",
@@ -10,7 +10,7 @@
         "GaussianNB()"
     ],
     "routing_model": "KNeighborsClassifier()",
-    "estimators_generator": "<class 'testing.test_hellsemble.estimator_generator.PredefinedEstimatorsGenerator'>",
+    "estimators_generator": "<class 'hellsemble.estimator_generator.PredefinedEstimatorsGenerator'>",
     "metric": "accuracy_score",
     "experiment_type": "full"
 }
