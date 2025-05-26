@@ -405,17 +405,89 @@ class Hellsemble(BaseEstimator):
                     best_model, X_val
                 )
                 failed_observations_mask_val = val_predictions != y_val
+
+                # --- Regularization: allow some good observations to pass through (train) ---
+                train_score = self.evaluate_hellsemble(X_train, y_train)
+                val_score = self.evaluate_hellsemble(X_val, y_val)
+                num_additional_correct_fit = int(
+                    max(
+                        0,
+                        (
+                            (train_score - val_score)
+                            / train_score
+                            * (X_fit.shape[0] - failed_observations_mask_fit.sum())
+                            if train_score != 0
+                            else 0
+                        ),
+                    )
+                )
+                additional_correct_idx_fit = (
+                    np.random.choice(
+                        np.where(~failed_observations_mask_fit)[0],
+                        size=min(
+                            num_additional_correct_fit,
+                            (~failed_observations_mask_fit).sum(),
+                        ),
+                        replace=False,
+                    )
+                    if num_additional_correct_fit > 0
+                    else np.array([], dtype=int)
+                )
+                failed_observations_idx_fit = np.concatenate(
+                    [
+                        failed_observations_idx_fit,
+                        failed_observations_idx_fit[additional_correct_idx_fit],
+                    ]
+                )
+                failed_observations_mask_fit_new = np.isin(
+                    np.arange(X_fit.shape[0]), failed_observations_idx_fit
+                )
+
+                # --- Regularization: allow some good observations to pass through (val) ---
+                num_additional_correct_val = int(
+                    max(
+                        0,
+                        (
+                            (train_score - val_score)
+                            / train_score
+                            * (X_val.shape[0] - failed_observations_mask_val.sum())
+                            if train_score != 0
+                            else 0
+                        ),
+                    )
+                )
+                additional_correct_idx_val = (
+                    np.random.choice(
+                        np.where(~failed_observations_mask_val)[0],
+                        size=min(
+                            num_additional_correct_val,
+                            (~failed_observations_mask_val).sum(),
+                        ),
+                        replace=False,
+                    )
+                    if num_additional_correct_val > 0
+                    else np.array([], dtype=int)
+                )
+                failed_observations_idx_val = np.concatenate(
+                    [
+                        failed_observations_idx_val,
+                        failed_observations_idx_val[additional_correct_idx_val],
+                    ]
+                )
+                failed_observations_mask_val_new = np.isin(
+                    np.arange(X_val.shape[0]), failed_observations_idx_val
+                )
+
                 # Create prediction history entry
                 failed_observations_idx_fit = failed_observations_idx_fit[
-                    failed_observations_mask_fit
+                    failed_observations_mask_fit_new
                 ]
                 train_fitting_history_entry = np.full((X_train.shape[0]), False)
-
                 train_fitting_history_entry[failed_observations_idx_fit] = True
                 train_fitting_history.append(train_fitting_history_entry)
 
                 failed_observations_idx_val = failed_observations_idx_val[
-                    failed_observations_mask_val
+                    failed_observations_mask_val_new
                 ]
                 validation_fitting_history_entry = np.full(
                     (X_validation.shape[0]), False
@@ -425,13 +497,13 @@ class Hellsemble(BaseEstimator):
 
                 # Update fitting and validation data
                 X_fit, y_fit = (
-                    X_fit[failed_observations_mask_fit],
-                    y_fit[failed_observations_mask_fit],
+                    X_fit[failed_observations_mask_fit_new],
+                    y_fit[failed_observations_mask_fit_new],
                 )
 
                 X_val, y_val = (
-                    X_val[failed_observations_mask_val],
-                    y_val[failed_observations_mask_val],
+                    X_val[failed_observations_mask_val_new],
+                    y_val[failed_observations_mask_val_new],
                 )
 
                 if len(failed_observations_idx_fit) == 0:
