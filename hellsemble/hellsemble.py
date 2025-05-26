@@ -10,7 +10,7 @@ from sklearn.base import BaseEstimator, ClassifierMixin, clone
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-from .estimator_generator import EstimatorGenerator
+from .estimator_generator import PredefinedEstimatorsGenerator
 from .prediction_generator import PredictionGenerator
 
 
@@ -46,7 +46,7 @@ class Hellsemble(BaseEstimator):
     @validate_call(config=dict(arbitrary_types_allowed=True))
     def __init__(
         self,
-        estimator_generator: EstimatorGenerator,
+        estimator_generator: PredefinedEstimatorsGenerator,
         prediction_generator: PredictionGenerator,
         routing_model: ClassifierMixin,
         mode: Literal["greedy", "sequential"] = "greedy",
@@ -207,7 +207,7 @@ class Hellsemble(BaseEstimator):
         X_validation: np.ndarray | pd.DataFrame,
         y_validation: np.ndarray | pd.Series,
         threshold: float,
-    ) -> Tuple[list[ClassifierMixin], list[np.ndarray], list[np.ndarray]]:
+    ) -> Tuple[list[ClassifierMixin], list[np.ndarray], list[float], list[float]]:
         """
         Fits a sequence of estimators and tracks their performance.
         This method iterates through the estimator generator, fitting
@@ -255,7 +255,9 @@ class Hellsemble(BaseEstimator):
                 estimator, X_fit
             )
             failed_observations_mask_fit = fit_predictions != y_fit
-            coverage_counts.append(X_fit.shape[0] - failed_observations_mask_fit.sum())
+            coverage_counts.append(
+                float(X_fit.shape[0] - failed_observations_mask_fit.sum())
+            )
 
             # Make and evaluate predictions on validation set
             val_predictions = self.prediction_generator.make_prediction_train(
@@ -290,7 +292,7 @@ class Hellsemble(BaseEstimator):
             )
 
             if X_fit.shape[0] == 0 or X_val.shape[0] == 0:
-                performance_scores.append(1)
+                performance_scores.append(1.0)
                 break
 
             # Validate the ensemble
@@ -302,7 +304,7 @@ class Hellsemble(BaseEstimator):
                 )
             val_score = self.evaluate_hellsemble(X_validation, y_validation)
             self.meta.append(val_score)
-            performance_scores.append(val_score)
+            performance_scores.append(float(val_score))
             if val_score >= threshold:
                 break
         return (
@@ -319,7 +321,7 @@ class Hellsemble(BaseEstimator):
         X_validation: np.ndarray | pd.DataFrame,
         y_validation: np.ndarray | pd.Series,
         threshold: float,
-    ) -> Tuple[list[np.ndarray], list[np.ndarray]]:
+    ) -> Tuple[list[ClassifierMixin], list[np.ndarray], list[float], list[float]]:
         """
         Fits a sequence of estimators and tracks their performance.
         It uses the logic of fitting subsequent classifiers on observations
@@ -396,7 +398,9 @@ class Hellsemble(BaseEstimator):
                 fit_predictions = self.prediction_generator.make_prediction_train(
                     best_model, X_fit
                 )
-                performance_scores.append(self.metric(y_val, best_model.predict(X_val)))
+                performance_scores.append(
+                    float(self.metric(y_val, best_model.predict(X_val)))
+                )
                 failed_observations_mask_fit = fit_predictions != y_fit
                 coverage_counts.append(len(X_fit) - failed_observations_mask_fit.sum())
 

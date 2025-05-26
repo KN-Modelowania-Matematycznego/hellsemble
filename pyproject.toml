@@ -1,0 +1,38 @@
+[project]
+name = "hellsemble"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "jedrzejrucinski",email = "jedrek.rucinski@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "scikit-learn (==1.5.0)",
+    "pandas (==2.2.2)",
+    "numpy (==1.26.4)",
+    "pydantic (==2.9.2)",
+    "black (==24.4.2)",
+    "flake8 (==7.1.0)",
+    "isort (==5.13.2)",
+    "pytest (==8.2.2)",
+    "loguru (==0.7.2)",
+    "openml (==0.14.2)",
+    "scikit-posthocs (==0.9.0)",
+    "matplotlib (==3.9.1)",
+    "lightgbm (==4.3.0)",
+    "catboost (==1.2.7)",
+    "xgboost (==2.0.3)",
+    "ruff (==0.9.2)",
+    "mypy (==1.14.0)",
+    "pandas-stubs (==2.2.2.240514)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.mypy.overrides]]
+module = "sklearn.*"
+ignore_missing_imports = true
