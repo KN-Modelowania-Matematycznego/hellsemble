@@ -257,6 +257,9 @@ class Hellsemble(BaseEstimator):
         fit_indices = failed_observations_idx_fit.copy()
         val_indices = failed_observations_idx_val.copy()
 
+        self.progressive_train_scores = []
+        self.progressive_val_scores = []
+
         while not self.__fitting_stop_condition(validation_fitting_history):
             best_model = None
             best_ensemble_score = best_score
@@ -294,6 +297,13 @@ class Hellsemble(BaseEstimator):
             if best_model is not None and best_ensemble_score >= best_score:
                 self.estimators.append(clone(best_model).fit(X_fit, y_fit))
                 best_score = best_ensemble_score
+                # Record progressive scores after model is added
+                self.progressive_train_scores.append(
+                    self.evaluate_hellsemble(X_train, y_train)
+                )
+                self.progressive_val_scores.append(
+                    self.evaluate_hellsemble(X_validation, y_validation)
+                )
                 fit_predictions = self.prediction_generator.make_prediction_train(
                     best_model, X_fit
                 )
@@ -466,6 +476,9 @@ class Hellsemble(BaseEstimator):
         fit_indices = failed_observations_idx_fit.copy()
         val_indices = failed_observations_idx_val.copy()
 
+        self.progressive_train_scores = []
+        self.progressive_val_scores = []
+
         while not self.__fitting_stop_condition(validation_fitting_history):
             best_model = None
             best_ensemble_score = best_score
@@ -503,6 +516,12 @@ class Hellsemble(BaseEstimator):
             if best_model is not None and best_ensemble_score >= best_score:
                 self.estimators.append(clone(best_model).fit(X_fit, y_fit))
                 best_score = best_ensemble_score
+                self.progressive_train_scores.append(
+                    self.evaluate_hellsemble(X_train, y_train)
+                )
+                self.progressive_val_scores.append(
+                    self.evaluate_hellsemble(X_validation, y_validation)
+                )
                 fit_predictions = self.prediction_generator.make_prediction_train(
                     best_model, X_fit
                 )

@@ -137,6 +137,8 @@ class HellsembleExperiment:
             "score": evaluation,
             "num_models": len(hellsemble_estimators),
             "progressive_validation_scores": eval_scores,
+            "progressive_train_scores": estimator.progressive_train_scores,
+            "progressive_val_scores": estimator.progressive_val_scores,
             "routing_accuracy": routing_accuracy,
             "models": {
                 f"{i}_{str(model.__repr__())}": {
