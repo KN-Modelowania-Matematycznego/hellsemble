@@ -2,10 +2,10 @@ name: Mypy
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 jobs:
   ruff:
     runs-on: ubuntu-latest
