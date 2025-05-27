@@ -1,6 +1,7 @@
 import json
 import os
 import pprint
+import warnings
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, List, Tuple
@@ -17,6 +18,14 @@ from testing.automl_config import AutoMLRun
 from testing.eval_utils import (
     calculate_ranks,
     generate_CD_plot,
+)
+
+warnings.filterwarnings(
+    "ignore", message="X has feature names, but.*was fitted without feature names"
+)
+warnings.filterwarnings(
+    "ignore",
+    message="X does not have valid feature names, but.*was fitted with feature names",
 )
 
 
@@ -130,11 +139,11 @@ class HellsembleExperiment:
             "progressive_validation_scores": eval_scores,
             "routing_accuracy": routing_accuracy,
             "models": {
-            f"{i}_{str(model.__repr__())}": {
-                "coverage_perc": estimator.coverage_counts[i] / len(X_train),
-                "performance_score": estimator.performance_scores[i],
-            }
-            for i, model in enumerate(hellsemble_estimators)
+                f"{i}_{str(model.__repr__())}": {
+                    "coverage_perc": estimator.coverage_counts[i] / len(X_train),
+                    "performance_score": estimator.performance_scores[i],
+                }
+                for i, model in enumerate(hellsemble_estimators)
             },
         }
 

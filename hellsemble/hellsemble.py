@@ -100,8 +100,15 @@ class Hellsemble(BaseEstimator):
             test_size=validation_size,
             random_state=seed,
         )
-        if isinstance(X_train, pd.DataFrame):
+        # I needed to add this for indexing to work correctly, maybe someone sees an easier fix
+        if isinstance(X_train, pd.DataFrame) or isinstance(X_train, pd.Series):
             X_train = X_train.values
+        if isinstance(X_val, pd.DataFrame) or isinstance(X_val, pd.Series):
+            X_val = X_val.values
+        if isinstance(y_train, pd.Series):
+            y_train = y_train.values
+        if isinstance(y_val, pd.Series):
+            y_val = y_val.values
         if self.mode == "greedy":
             (
                 self.__train_fitting_history,
@@ -357,6 +364,8 @@ class Hellsemble(BaseEstimator):
         X_fit, y_fit = X_train, y_train
         X_val, y_val = X_validation, y_validation
         best_score = 0
+        fit_indices = failed_observations_idx_fit.copy()
+        val_indices = failed_observations_idx_val.copy()
 
         while not self.__fitting_stop_condition(validation_fitting_history):
             best_model = None
@@ -370,7 +379,7 @@ class Hellsemble(BaseEstimator):
                     estimator, X_fit
                 )
                 failed_observations_mask_fit = predictions != y_fit
-                failed_observations_idx_fit_temp = failed_observations_idx_fit[
+                failed_observations_idx_fit_temp = fit_indices[
                     failed_observations_mask_fit
                 ]
 
@@ -410,6 +419,19 @@ class Hellsemble(BaseEstimator):
                 )
                 failed_observations_mask_val = val_predictions != y_val
 
+                # Create prediction history entry
+                failed_observations_idx_fit = fit_indices[failed_observations_mask_fit]
+                train_fitting_history_entry = np.full((X_train.shape[0]), False)
+                train_fitting_history_entry[failed_observations_idx_fit] = True
+                train_fitting_history.append(train_fitting_history_entry)
+
+                failed_observations_idx_val = val_indices[failed_observations_mask_val]
+                validation_fitting_history_entry = np.full(
+                    (X_validation.shape[0]), False
+                )
+                validation_fitting_history_entry[failed_observations_idx_val] = True
+                validation_fitting_history.append(validation_fitting_history_entry)
+
                 # --- Regularization: allow some good observations to pass through (train) ---
                 train_score = self.evaluate_hellsemble(X_train, y_train)
                 val_score = self.evaluate_hellsemble(X_val, y_val)
@@ -440,12 +462,10 @@ class Hellsemble(BaseEstimator):
                 failed_observations_idx_fit = np.concatenate(
                     [
                         failed_observations_idx_fit,
-                        failed_observations_idx_fit[additional_correct_idx_fit],
+                        fit_indices[additional_correct_idx_fit],
                     ]
                 )
-                failed_observations_mask_fit_new = np.isin(
-                    np.arange(X_fit.shape[0]), failed_observations_idx_fit
-                )
+                failed_observations_idx_fit = np.unique(failed_observations_idx_fit)
 
                 # --- Regularization: allow some good observations to pass through (val) ---
                 num_additional_correct_val = int(
@@ -475,40 +495,22 @@ class Hellsemble(BaseEstimator):
                 failed_observations_idx_val = np.concatenate(
                     [
                         failed_observations_idx_val,
-                        failed_observations_idx_val[additional_correct_idx_val],
+                        val_indices[additional_correct_idx_val],
                     ]
                 )
-                failed_observations_mask_val_new = np.isin(
-                    np.arange(X_val.shape[0]), failed_observations_idx_val
-                )
-
-                # Create prediction history entry
-                failed_observations_idx_fit = failed_observations_idx_fit[
-                    failed_observations_mask_fit_new
-                ]
-                train_fitting_history_entry = np.full((X_train.shape[0]), False)
-                train_fitting_history_entry[failed_observations_idx_fit] = True
-                train_fitting_history.append(train_fitting_history_entry)
-
-                failed_observations_idx_val = failed_observations_idx_val[
-                    failed_observations_mask_val_new
-                ]
-                validation_fitting_history_entry = np.full(
-                    (X_validation.shape[0]), False
-                )
-                validation_fitting_history_entry[failed_observations_idx_val] = True
-                validation_fitting_history.append(validation_fitting_history_entry)
+                failed_observations_idx_val = np.unique(failed_observations_idx_val)
 
                 # Update fitting and validation data
                 X_fit, y_fit = (
-                    X_fit[failed_observations_mask_fit_new],
-                    y_fit[failed_observations_mask_fit_new],
+                    X_train[failed_observations_idx_fit],
+                    y_train[failed_observations_idx_fit],
                 )
-
+                fit_indices = failed_observations_idx_fit.copy()
                 X_val, y_val = (
-                    X_val[failed_observations_mask_val_new],
-                    y_val[failed_observations_mask_val_new],
+                    X_validation[failed_observations_idx_val],
+                    y_validation[failed_observations_idx_val],
                 )
+                val_indices = failed_observations_idx_val.copy()
 
                 if len(failed_observations_idx_fit) == 0:
                     break
