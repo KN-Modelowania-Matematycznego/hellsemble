@@ -245,177 +245,81 @@ class Hellsemble(BaseEstimator):
         failed_observations_idx_fit = np.arange(X_train.shape[0])
         failed_observations_idx_val = np.arange(X_validation.shape[0])
 
-        # Creating copies of data for collecting fitting history
-        X_fit, y_fit = X_train, y_train
-        X_val, y_val = X_validation, y_validation
-        # Ensure numpy arrays for safe integer indexing (mypy fix)
-        X_train = np.asarray(X_train)
-        y_train = np.asarray(y_train)
-        X_validation = np.asarray(X_validation)
-        y_validation = np.asarray(y_validation)
-        best_score = 0
-        fit_indices = failed_observations_idx_fit.copy()
-        val_indices = failed_observations_idx_val.copy()
-
         self.progressive_train_scores = []
         self.progressive_val_scores = []
 
-        while not self.__fitting_stop_condition(validation_fitting_history):
-            best_model = None
-            best_ensemble_score = best_score
-            self.estimator_generator.reset_generator()
+        # Creating copies of data for collecting fitting history
+        X_fit, y_fit = X_train, y_train
+        X_val, y_val = X_validation, y_validation
+        while (
+            self.estimator_generator.has_next()
+            and not self.__fitting_stop_condition(validation_fitting_history)
+            and len(np.unique(y_fit)) > 1
+        ):
+            # Generate next iterator
+            estimator = self.estimator_generator.fit_next_estimator(X_fit, y_fit)
+            self.estimators.append(estimator)
 
-            # Going through provided model list
-            while self.estimator_generator.has_next() and len(np.unique(y_fit)) > 1:
-                estimator = self.estimator_generator.fit_next_estimator(X_fit, y_fit)
-                predictions = self.prediction_generator.make_prediction_train(
-                    estimator, X_fit
-                )
-                failed_observations_mask_fit = predictions != y_fit
-                failed_observations_idx_fit_temp = fit_indices[
-                    failed_observations_mask_fit
-                ]
+            # Make and evaluate predictions on training set
+            fit_predictions = self.prediction_generator.make_prediction_train(
+                estimator, X_fit
+            )
+            failed_observations_mask_fit = fit_predictions != y_fit
+            coverage_counts.append(X_fit.shape[0] - failed_observations_mask_fit.sum())
 
-                train_fitting_history_entry = np.full((X_train.shape[0]), False)
-                train_fitting_history_entry[failed_observations_idx_fit_temp] = True
-                self.estimators.append(estimator)
+            # Make and evaluate predictions on validation set
+            val_predictions = self.prediction_generator.make_prediction_train(
+                estimator, X_val
+            )
+            failed_observations_mask_val = val_predictions != y_val
 
-                if len(self.estimators) > 1:
-                    self.routing_model = self.__fit_routing_model(
-                        self.routing_model,
-                        X_train,
-                        train_fitting_history + [train_fitting_history_entry],
-                    )
-                # predictions = self.predict(X)
-                current_score = self.evaluate_hellsemble(X_validation, y_validation)
-                self.estimators.pop()
+            # Create prediction history entry
+            failed_observations_idx_fit = failed_observations_idx_fit[
+                failed_observations_mask_fit
+            ]
+            train_fitting_history_entry = np.full((X_train.shape[0]), False)
+            train_fitting_history_entry[failed_observations_idx_fit] = True
+            train_fitting_history.append(train_fitting_history_entry)
 
-                if current_score >= best_ensemble_score:
-                    best_model = estimator
-                    best_ensemble_score = current_score
-            # Best model from iteration is added to estimators sequence
-            if best_model is not None and best_ensemble_score >= best_score:
-                self.estimators.append(clone(best_model).fit(X_fit, y_fit))
-                best_score = best_ensemble_score
-                # Record progressive scores after model is added
-                self.progressive_train_scores.append(
-                    self.evaluate_hellsemble(X_train, y_train)
-                )
-                self.progressive_val_scores.append(
-                    self.evaluate_hellsemble(X_validation, y_validation)
-                )
-                fit_predictions = self.prediction_generator.make_prediction_train(
-                    best_model, X_fit
-                )
-                performance_scores.append(
-                    float(self.metric(y_val, best_model.predict(X_val)))
-                )
-                failed_observations_mask_fit = fit_predictions != y_fit
-                coverage_counts.append(len(X_fit) - failed_observations_mask_fit.sum())
+            failed_observations_idx_val = failed_observations_idx_val[
+                failed_observations_mask_val
+            ]
+            validation_fitting_history_entry = np.full((X_validation.shape[0]), False)
+            validation_fitting_history_entry[failed_observations_idx_val] = True
+            validation_fitting_history.append(validation_fitting_history_entry)
 
-                # Make and evaluate predictions on validation set
-                val_predictions = self.prediction_generator.make_prediction_train(
-                    best_model, X_val
-                )
-                failed_observations_mask_val = val_predictions != y_val
+            # Update fitting and validation data
+            X_fit, y_fit = (
+                X_fit[failed_observations_mask_fit],
+                y_fit[failed_observations_mask_fit],
+            )
 
-                # Create prediction history entry
-                failed_observations_idx_fit = fit_indices[failed_observations_mask_fit]
-                train_fitting_history_entry = np.full((X_train.shape[0]), False)
-                train_fitting_history_entry[failed_observations_idx_fit] = True
-                train_fitting_history.append(train_fitting_history_entry)
+            X_val, y_val = (
+                X_val[failed_observations_mask_val],
+                y_val[failed_observations_mask_val],
+            )
 
-                failed_observations_idx_val = val_indices[failed_observations_mask_val]
-                validation_fitting_history_entry = np.full(
-                    (X_validation.shape[0]), False
-                )
-                validation_fitting_history_entry[failed_observations_idx_val] = True
-                validation_fitting_history.append(validation_fitting_history_entry)
+            if X_fit.shape[0] == 0 or X_val.shape[0] == 0:
+                performance_scores.append(1)
+                break
 
-                # --- Regularization: allow some good observations to pass through (train) ---
-                train_score = self.evaluate_hellsemble(X_train, y_train)
-                val_score = self.evaluate_hellsemble(X_val, y_val)
-                num_additional_correct_fit = int(
-                    max(
-                        0,
-                        (
-                            (train_score - val_score)
-                            / train_score
-                            * (X_fit.shape[0] - failed_observations_mask_fit.sum())
-                            if train_score != 0
-                            else 0
-                        ),
-                    )
+            # Validate the ensemble
+            if len(self.estimators) > 1:
+                self.routing_model = self.__fit_routing_model(
+                    self.routing_model,
+                    X_train,
+                    train_fitting_history + [train_fitting_history_entry],
                 )
-                additional_correct_idx_fit = (
-                    np.random.choice(
-                        np.where(~failed_observations_mask_fit)[0],
-                        size=min(
-                            num_additional_correct_fit,
-                            (~failed_observations_mask_fit).sum(),
-                        ),
-                        replace=False,
-                    )
-                    if num_additional_correct_fit > 0
-                    else np.array([], dtype=int)
-                )
-                failed_observations_idx_fit = np.concatenate(
-                    [
-                        failed_observations_idx_fit,
-                        fit_indices[additional_correct_idx_fit],
-                    ]
-                )
-                failed_observations_idx_fit = np.unique(failed_observations_idx_fit)
-
-                # --- Regularization: allow some good observations to pass through (val) ---
-                num_additional_correct_val = int(
-                    max(
-                        0,
-                        (
-                            (train_score - val_score)
-                            / train_score
-                            * (X_val.shape[0] - failed_observations_mask_val.sum())
-                            if train_score != 0
-                            else 0
-                        ),
-                    )
-                )
-                additional_correct_idx_val = (
-                    np.random.choice(
-                        np.where(~failed_observations_mask_val)[0],
-                        size=min(
-                            num_additional_correct_val,
-                            (~failed_observations_mask_val).sum(),
-                        ),
-                        replace=False,
-                    )
-                    if num_additional_correct_val > 0
-                    else np.array([], dtype=int)
-                )
-                failed_observations_idx_val = np.concatenate(
-                    [
-                        failed_observations_idx_val,
-                        val_indices[additional_correct_idx_val],
-                    ]
-                )
-
-                # Update fitting and validation data
-                X_fit, y_fit = (
-                    X_train[failed_observations_idx_fit],
-                    y_train[failed_observations_idx_fit],
-                )
-                fit_indices = failed_observations_idx_fit.copy()
-                X_val, y_val = (
-                    X_validation[failed_observations_idx_val],
-                    y_validation[failed_observations_idx_val],
-                )
-                val_indices = failed_observations_idx_val.copy()
-
-                if len(failed_observations_idx_fit) == 0:
-                    break
-                if best_score >= threshold:
-                    break
-            else:
+            val_score = self.evaluate_hellsemble(X_validation, y_validation)
+            self.meta.append(val_score)
+            performance_scores.append(val_score)
+            self.progressive_train_scores.append(
+                self.evaluate_hellsemble(X_train, y_train)
+            )
+            self.progressive_val_scores.append(
+                self.evaluate_hellsemble(X_validation, y_validation)
+            )
+            if val_score >= threshold:
                 break
         return (
             train_fitting_history,
