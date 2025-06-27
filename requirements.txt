@@ -2,7 +2,7 @@
 scikit-learn==1.5.0
 pandas==2.2.2
 
-numpy==2.0.0
+numpy==1.26.4
 pydantic==2.9.2
 
 
@@ -16,6 +16,6 @@ openml==0.14.2
 scikit-posthocs==0.9.0
 matplotlib==3.9.1
 lightgbm==4.3.0
-catboost==1.2.5
+catboost==1.2.7
 xgboost==2.0.3
 #autogluon and/or autosklearn need to be installed separately (best through conda)

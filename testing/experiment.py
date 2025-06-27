@@ -1,6 +1,7 @@
 import json
 import os
 import pprint
+import warnings
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, List, Tuple
@@ -17,6 +18,14 @@ from testing.automl_config import AutoMLRun
 from testing.eval_utils import (
     calculate_ranks,
     generate_CD_plot,
+)
+
+warnings.filterwarnings(
+    "ignore", message="X has feature names, but.*was fitted without feature names"
+)
+warnings.filterwarnings(
+    "ignore",
+    message="X does not have valid feature names, but.*was fitted with feature names",
 )
 
 
@@ -127,14 +136,16 @@ class HellsembleExperiment:
         return {f"Hellsemble_{mode}": evaluation}, {
             "score": evaluation,
             "num_models": len(hellsemble_estimators),
-            "progressive_scores": eval_scores,
+            "progressive_validation_scores": eval_scores,
+            "progressive_train_scores": estimator.progressive_train_scores,
+            "progressive_val_scores": estimator.progressive_val_scores,
             "routing_accuracy": routing_accuracy,
             "models": {
-            f"{i}_{str(model.__repr__())}": {
-                "coverage_perc": estimator.coverage_counts[i] / len(X_train),
-                "performance_score": estimator.performance_scores[i],
-            }
-            for i, model in enumerate(hellsemble_estimators)
+                f"{i}_{str(model.__repr__())}": {
+                    "coverage_perc": estimator.coverage_counts[i] / len(X_train),
+                    "performance_score": estimator.performance_scores[i],
+                }
+                for i, model in enumerate(hellsemble_estimators)
             },
         }
 
@@ -175,42 +186,44 @@ class HellsembleExperiment:
 
             logger.info(f"Running experiment for dataset: {dataset_name}")
             if self.experiment_type in ["full", "base_models"]:
-                # try:
-                results[dataset_name]["base_models"] = self._get_base_model_results(
-                    train_file, test_file
-                )
-            # except Exception as e:
-            #     logger.error(
-            #         f"Error running base models experiment for dataset {dataset_name}: {e}"
-            #     )
+                try:
+                    results[dataset_name]["base_models"] = self._get_base_model_results(
+                        train_file, test_file
+                    )
+                except Exception as e:
+                    logger.error(
+                        f"Error running base models experiment for dataset {dataset_name}: {e}"
+                    )
             if self.experiment_type in ["full", "hellsemble"]:
                 results[dataset_name]["hellsemble"] = {}
                 hellsemble_results_info[dataset_name] = {
                     "greedy": {},
                     "sequential": {},
                 }
-                # try:
-                run_results = self._train_and_test_hellsemble(
-                    train_file, test_file, "sequential"
-                )
-                results[dataset_name]["hellsemble"].update(run_results[0])
-                hellsemble_results_info[dataset_name]["sequential"].update(
-                    run_results[1]
-                )
-                # except Exception as e:
-                #     logger.error(
-                #         f"Error running sequential Hellsemble experiment for dataset {dataset_name}: {e}"
-                #     )
-                # try:
-                run_results = self._train_and_test_hellsemble(
-                    train_file, test_file, "greedy"
-                )
-                results[dataset_name]["hellsemble"].update(run_results[0])
-                hellsemble_results_info[dataset_name]["greedy"].update(run_results[1])
-                # except Exception as e:
-                #     logger.error(
-                #         f"Error running greedy Hellsemble experiment for dataset {dataset_name}: {e}"
-                #     )
+                try:
+                    run_results = self._train_and_test_hellsemble(
+                        train_file, test_file, "sequential"
+                    )
+                    results[dataset_name]["hellsemble"].update(run_results[0])
+                    hellsemble_results_info[dataset_name]["sequential"].update(
+                        run_results[1]
+                    )
+                except Exception as e:
+                    logger.error(
+                        f"Error running sequential Hellsemble experiment for dataset {dataset_name}: {e}"
+                    )
+                try:
+                    run_results = self._train_and_test_hellsemble(
+                        train_file, test_file, "greedy"
+                    )
+                    results[dataset_name]["hellsemble"].update(run_results[0])
+                    hellsemble_results_info[dataset_name]["greedy"].update(
+                        run_results[1]
+                    )
+                except Exception as e:
+                    logger.error(
+                        f"Error running greedy Hellsemble experiment for dataset {dataset_name}: {e}"
+                    )
 
         average_ranks, ranks_df = calculate_ranks(results)
 
