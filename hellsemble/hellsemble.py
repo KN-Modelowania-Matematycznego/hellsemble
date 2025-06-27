@@ -398,7 +398,6 @@ class Hellsemble(BaseEstimator):
                         val_indices[additional_correct_idx_val],
                     ]
                 )
-                failed_observations_idx_val = np.unique(failed_observations_idx_val)
 
                 # Update fitting and validation data
                 X_fit, y_fit = (
@@ -583,7 +582,6 @@ class Hellsemble(BaseEstimator):
                         fit_indices[additional_correct_idx_fit],
                     ]
                 )
-                failed_observations_idx_fit = np.unique(failed_observations_idx_fit)
 
                 # --- Regularization: allow some good observations to pass through (val) ---
                 num_additional_correct_val = int(
