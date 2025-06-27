@@ -214,7 +214,7 @@ class Hellsemble(BaseEstimator):
         X_validation: np.ndarray | pd.DataFrame,
         y_validation: np.ndarray | pd.Series,
         threshold: float,
-    ) -> Tuple[list[ClassifierMixin], list[np.ndarray], list[float], list[float]]:
+    ) -> Tuple[list[np.ndarray], list[np.ndarray], list[float], list[float]]:
         """
         Fits a sequence of estimators and tracks their performance.
         This method iterates through the estimator generator, fitting
@@ -240,8 +240,8 @@ class Hellsemble(BaseEstimator):
         validation_fitting_history: list[np.ndarray] = []
         self.estimators = []
         self.meta: list[float] = []
-        coverage_counts = []
-        performance_scores = []
+        coverage_counts: list[float] = []
+        performance_scores: list[float] = []
         failed_observations_idx_fit = np.arange(X_train.shape[0])
         failed_observations_idx_val = np.arange(X_validation.shape[0])
 
@@ -300,7 +300,7 @@ class Hellsemble(BaseEstimator):
             )
 
             if X_fit.shape[0] == 0 or X_val.shape[0] == 0:
-                performance_scores.append(1)
+                performance_scores.append(1.0)
                 break
 
             # Validate the ensemble
@@ -335,7 +335,7 @@ class Hellsemble(BaseEstimator):
         X_validation: np.ndarray | pd.DataFrame,
         y_validation: np.ndarray | pd.Series,
         threshold: float,
-    ) -> Tuple[list[ClassifierMixin], list[np.ndarray], list[float], list[float]]:
+    ) -> Tuple[list[np.ndarray], list[np.ndarray], list[float], list[float]]:
         """
         Fits a sequence of estimators and tracks their performance.
         It uses the logic of fitting subsequent classifiers on observations
@@ -362,8 +362,8 @@ class Hellsemble(BaseEstimator):
         validation_fitting_history: list[np.ndarray] = []
         self.estimators = []
         self.meta = []
-        coverage_counts = []
-        performance_scores = []
+        coverage_counts: list[float] = []
+        performance_scores: list[float] = []
         failed_observations_idx_fit = np.arange(X_train.shape[0])
         failed_observations_idx_val = np.arange(X_validation.shape[0])
 
